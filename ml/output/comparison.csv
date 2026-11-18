@@ -1,0 +1,5 @@
+Model,"CV F1 (5-fold, train)",Accuracy,Precision,Recall,F1,ROC-AUC
+Logistic Regression,0.8505,0.7867,0.8091,0.89,0.8476,0.8605
+Decision Tree,0.814,0.7567,0.7635,0.92,0.8345,0.7454
+Random Forest,0.8427,0.7567,0.7749,0.895,0.8306,0.8216
+Gradient Boosting,0.8426,0.7667,0.7928,0.88,0.8341,0.8326

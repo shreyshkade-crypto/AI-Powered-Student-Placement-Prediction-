@@ -1,0 +1,73 @@
+% ---------------------------------------------------------------
+% Paste this file's contents (or \input{ml_section}) BEFORE the
+% "Results and Discussion" section.  Preamble needs:  \input{ml_results}
+% Upload from ml/output/: ml_results.tex, confusion_matrix.png,
+% roc_curves.png, feature_importance.png, eda_correlation.png
+% ---------------------------------------------------------------
+\section{Machine Learning Model}
+
+\subsection{Dataset and Preprocessing}
+The models are trained on \mlDataset{}, containing \mlNTotal{} student records with a binary placement outcome (placed / not placed). The input features are: \mlFeatures. Records with missing values are removed, and exploratory analysis (class balance, feature distributions, and the correlation matrix) is performed before training.
+
+\subsection{Experimental Setup}
+The data is divided into a training set (\mlNTrain{} records) and a test set (\mlNTest{} records) using a stratified 80/20 split with a fixed random seed, so both sets keep the same class ratio. Three classifiers are compared: Logistic Regression (with feature standardization), a Decision Tree, and a Random Forest. The hyperparameters of each model are tuned with grid search and 5-fold stratified cross-validation on the training set only, and the best model is also selected on cross-validation F1. The test set is used once, for the final evaluation. The selected model is \mlBest{} with parameters \mlBestParams.
+
+\subsection{Evaluation Metrics}
+Performance is reported using accuracy, precision, recall, F1-score, and the area under the ROC curve (AUC):
+\begin{align}
+\text{Accuracy} &= \frac{TP+TN}{TP+TN+FP+FN}, &
+\text{Precision} &= \frac{TP}{TP+FP},\\
+\text{Recall} &= \frac{TP}{TP+FN}, &
+F_1 &= \frac{2\cdot \text{Precision}\cdot\text{Recall}}{\text{Precision}+\text{Recall}}.
+\end{align}
+
+\subsection{Classification Results}
+Table~\ref{tab:mlres} compares the three models on the held-out test set, and Fig.~\ref{fig:roc} shows their ROC curves. The confusion matrix of \mlBest{} is shown in Fig.~\ref{fig:cm} (TN\,=\,\mlTN, FP\,=\,\mlFP, FN\,=\,\mlFN, TP\,=\,\mlTP). Fig.~\ref{fig:fi} shows the permutation importance of each feature, i.e., how much the F1-score drops when that feature is shuffled.
+
+\begin{table}[t]
+\caption{Model Comparison on the Test Set (\%)}
+\label{tab:mlres}
+\centering\footnotesize
+\mlResultsTable
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\columnwidth]{roc_curves.png}
+\caption{ROC curves of the three classifiers on the test set.}
+\label{fig:roc}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.55\columnwidth]{confusion_matrix.png}
+\caption{Confusion matrix of the selected model on the test set.}
+\label{fig:cm}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.7\columnwidth]{feature_importance.png}
+\caption{Permutation feature importance of the selected model.}
+\label{fig:fi}
+\end{figure}
+
+\ifdefined\mlHasSalary
+\subsection{Salary Prediction (Regression)}
+For students who were placed (\mlSalN{} records), a regression model estimates the expected package from the same features. Linear Regression and a Random Forest Regressor are compared using mean absolute error (MAE), root mean squared error (RMSE), and the coefficient of determination $R^2$ in Table~\ref{tab:salres}.
+
+\begin{table}[t]
+\caption{Salary Regression on the Test Set}
+\label{tab:salres}
+\centering\footnotesize
+\mlSalaryTable
+\end{table}
+\fi
+
+\subsection{Discussion and Limitations}
+The dataset is small, so these metrics carry uncertainty and should not be read as a guarantee of real-world accuracy. Only a few features are available, and some factors that affect hiring, such as projects and communication skills, are not present in the dataset. The trained models are integrated into the web application and run alongside the rule-based readiness score so that both estimates can be compared.
+
+\ifdefined\mlSynthetic
+\subsection{Note on the Synthetic Dataset}
+Real placement records of the institute were not available for this study, so the models are trained on a synthetic dataset of \mlNTotal{} students generated with a fixed random seed. Placement is drawn from a noisy logistic rule in which higher CGPA, aptitude, programming skill, communication, projects, internships, and certifications raise the chance of placement, and backlogs lower it. Consequently, the reported metrics measure how well each algorithm recovers this rule from noisy data; they do not measure accuracy on real students. Replacing the file with real records and re-running the same pipeline is the planned next step.
+\fi

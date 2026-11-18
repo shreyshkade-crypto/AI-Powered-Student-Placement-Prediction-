@@ -1,0 +1,110 @@
+{
+  "dataset_kind": "app",
+  "data_source": "synthetic",
+  "n_total": 1500,
+  "n_train": 1200,
+  "n_test": 300,
+  "features": [
+    "cgpa",
+    "tenth",
+    "twelfth",
+    "aptitude",
+    "communication",
+    "programming",
+    "projects",
+    "internships",
+    "certifications",
+    "backlogs"
+  ],
+  "best_model": "Logistic Regression",
+  "best_params": {
+    "C": 1
+  },
+  "best": {
+    "Model": "Logistic Regression",
+    "CV F1 (5-fold, train)": 0.8505,
+    "Accuracy": 0.7867,
+    "Precision": 0.8091,
+    "Recall": 0.89,
+    "F1": 0.8476,
+    "ROC-AUC": 0.8605
+  },
+  "confusion_matrix": {
+    "tn": 58,
+    "fp": 42,
+    "fn": 22,
+    "tp": 178
+  },
+  "comparison": [
+    {
+      "Model": "Logistic Regression",
+      "CV F1 (5-fold, train)": 0.8505,
+      "Accuracy": 0.7867,
+      "Precision": 0.8091,
+      "Recall": 0.89,
+      "F1": 0.8476,
+      "ROC-AUC": 0.8605
+    },
+    {
+      "Model": "Decision Tree",
+      "CV F1 (5-fold, train)": 0.814,
+      "Accuracy": 0.7567,
+      "Precision": 0.7635,
+      "Recall": 0.92,
+      "F1": 0.8345,
+      "ROC-AUC": 0.7454
+    },
+    {
+      "Model": "Random Forest",
+      "CV F1 (5-fold, train)": 0.8427,
+      "Accuracy": 0.7567,
+      "Precision": 0.7749,
+      "Recall": 0.895,
+      "F1": 0.8306,
+      "ROC-AUC": 0.8216
+    },
+    {
+      "Model": "Gradient Boosting",
+      "CV F1 (5-fold, train)": 0.8426,
+      "Accuracy": 0.7667,
+      "Precision": 0.7928,
+      "Recall": 0.88,
+      "F1": 0.8341,
+      "ROC-AUC": 0.8326
+    }
+  ],
+  "permutation_importance": {
+    "cgpa": 0.0294,
+    "tenth": -0.0017,
+    "twelfth": -0.0039,
+    "aptitude": 0.0095,
+    "communication": 0.0013,
+    "programming": 0.0149,
+    "projects": 0.0077,
+    "internships": 0.0187,
+    "certifications": -0.0015,
+    "backlogs": 0.0119
+  },
+  "salary": {
+    "unit": "LPA",
+    "n_train": 799,
+    "n_test": 200,
+    "best_model": "Linear Regression",
+    "comparison": [
+      {
+        "Model": "Linear Regression",
+        "CV R2 (train)": 0.5753,
+        "MAE": 0.5,
+        "RMSE": 0.6,
+        "R2": 0.5313
+      },
+      {
+        "Model": "Random Forest Regressor",
+        "CV R2 (train)": 0.4973,
+        "MAE": 0.5,
+        "RMSE": 0.6,
+        "R2": 0.458
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-Cors==4.0.1
+requests==2.32.3
+
+# ML model (used by ml/train_model.py and /api/ml-predict)
+scikit-learn
+pandas
+numpy
+joblib
+matplotlib
