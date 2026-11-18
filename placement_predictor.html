@@ -862,6 +862,12 @@ body::before{display:none}.topnav{background:var(--card);backdrop-filter:none;-w
     <h2>How the prediction model was built</h2>
     <p>Explore the training workflow: dataset, train-test split, cross-validation, model comparison, and held-out test metrics.</p>
   </div>
+  <div class="card" style="margin-bottom:18px;">
+    <h3>Run the training pipeline</h3>
+    <p class="sub">This trains from <code>ml/placement_data.csv</code> and refreshes the saved model and charts. Dashboard inputs are for prediction only. The current dataset is synthetic.</p>
+    <button class="btn primary" id="mlTrainBtn">Train model now</button>
+    <pre id="mlTrainLog" style="white-space:pre-wrap;max-height:220px;overflow:auto;background:var(--card-2);border:1px solid var(--border);border-radius:8px;padding:12px;font:12px/1.5 'JetBrains Mono',monospace;color:var(--body);">Training has not been started from this page.</pre>
+  </div>
   <div class="card" id="mlLabStatus"><p class="sub" style="margin:0;">Loading model information from the backend&hellip;</p></div>
   <div id="mlLabBody" style="display:none;">
     <div class="card" style="margin-top:18px;">
@@ -2806,10 +2812,11 @@ async function loadMLLab(){
       info.comparison.map(r => '<tr class="' + (r.Model===info.best_model?'best':'') + '"><td>' + r.Model + (r.Model===info.best_model?' &#9733;':'') + '</td><td>' +
         pct(r['CV F1 (5-fold, train)']) + '</td><td>' + pct(r.Accuracy) + '</td><td>' + pct(r.Precision) + '</td><td>' + pct(r.Recall) +
         '</td><td>' + pct(r.F1) + '</td><td>' + r['ROC-AUC'].toFixed(2) + '</td></tr>').join('');
-    document.getElementById('imgCM').src = base + '/api/ml-image/confusion_matrix.png';
-    document.getElementById('imgROC').src = base + '/api/ml-image/roc_curves.png';
-    document.getElementById('imgFI').src = base + '/api/ml-image/feature_importance.png';
-    document.getElementById('imgCorr').src = base + '/api/ml-image/eda_correlation.png';
+    const imageVersion = Date.now();
+    document.getElementById('imgCM').src = base + '/api/ml-image/confusion_matrix.png?v=' + imageVersion;
+    document.getElementById('imgROC').src = base + '/api/ml-image/roc_curves.png?v=' + imageVersion;
+    document.getElementById('imgFI').src = base + '/api/ml-image/feature_importance.png?v=' + imageVersion;
+    document.getElementById('imgCorr').src = base + '/api/ml-image/eda_correlation.png?v=' + imageVersion;
     const sal = document.getElementById('mlSalaryCard');
     if(info.salary){
       sal.innerHTML = '<h3>Salary regression: ' + info.salary.best_model + '</h3><p class="sub">Placed students only (' + info.salary.n_train + ' train / ' + info.salary.n_test + ' test), unit: ' + info.salary.unit + '</p>' +
@@ -2821,6 +2828,38 @@ async function loadMLLab(){
     status.innerHTML = '<p class="sub" style="margin:0;">Backend not reachable &mdash; start it with <code>python app.py</code> (see the cloud-sync panel for the URL).</p>';
   }
 }
+
+const mlTrainBtn = document.getElementById('mlTrainBtn');
+const mlTrainLog = document.getElementById('mlTrainLog');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+mlTrainBtn.addEventListener('click', async ()=>{
+  mlTrainBtn.disabled = true;
+  mlTrainLog.textContent = 'Starting training from ml/placement_data.csv...\n';
+  try{
+    const base = currentBackendUrl();
+    const start = await fetch(base + '/api/ml-train', {method:'POST'});
+    const started = await start.json();
+    if(!start.ok) throw new Error(started.error || 'Could not start training.');
+    let status;
+    do{
+      await sleep(900);
+      const res = await fetch(base + '/api/ml-train-status', {cache:'no-store'});
+      status = await res.json();
+      mlTrainLog.textContent = status.log || status.message || 'Training...';
+      mlTrainLog.scrollTop = mlTrainLog.scrollHeight;
+    }while(status.running);
+    if(!status.success) throw new Error(status.message || 'Training failed.');
+    mlTrainLog.textContent += '\nTraining finished. Reloading evaluation results...';
+    mlLabLoaded = false;
+    await loadMLLab();
+    mlTrainLog.textContent += '\nML Lab metrics and charts have been refreshed.';
+  }catch(e){
+    mlTrainLog.textContent += '\n' + (e.message || 'Training failed. Is the Flask backend running locally?');
+  }finally{
+    mlTrainBtn.disabled = false;
+  }
+});
 
 document.getElementById('mlLabRun').addEventListener('click', async ()=>{
   const box = document.getElementById('mlLabResult');

@@ -14,7 +14,9 @@ Keep the backend terminal open and open `placement_predictor.html` in a browser.
 
 ## Train the model again
 
-From the project folder:
+With the Flask backend running locally, open the website's **ML Lab** tab and click **Train model now** to run the same pipeline from the page. The live log shows the CSV size and each classifier as it is tuned. This button uses only the CSV; dashboard profiles are not silently added to training data. It is restricted to requests from the local computer.
+
+You can also train from a terminal. From the project folder:
 
 ```powershell
 cd ml

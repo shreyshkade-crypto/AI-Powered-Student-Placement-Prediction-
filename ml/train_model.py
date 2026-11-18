@@ -134,8 +134,10 @@ def main():
     }
     rows, fitted, roc_data = [], {}, {}
     for name, (est, grid) in searches.items():
+        print(f'Tuning {name} with 5-fold cross-validation...', flush=True)
         gs = GridSearchCV(est, grid, cv=cv, scoring='f1', n_jobs=1).fit(X_tr, y_tr)  # train data only
         m = gs.best_estimator_
+        print(f'{name} complete | CV F1: {gs.best_score_:.4f}', flush=True)
         pred, proba = m.predict(X_te), m.predict_proba(X_te)[:, 1]
         fpr, tpr, _ = roc_curve(y_te, proba)
         roc_data[name] = (fpr, tpr)
@@ -205,6 +207,7 @@ def main():
                                                                  min_samples_leaf=3, random_state=SEED)}
         reg_rows, reg_fit = [], {}
         for name, r in regs.items():
+            print(f'Tuning salary regressor {name} with 5-fold cross-validation...', flush=True)
             cv_r2 = cross_val_score(r, Xs_tr, ys_tr, cv=5, scoring='r2').mean()
             r.fit(Xs_tr, ys_tr)
             p = r.predict(Xs_te)
@@ -213,6 +216,7 @@ def main():
                              'RMSE': round(float(np.sqrt(mean_squared_error(ys_te, p))), 1),
                              'R2': round(float(r2_score(ys_te, p)), 4)})
             reg_fit[name] = r
+            print(f'{name} complete | CV R2: {cv_r2:.4f}', flush=True)
         best_reg = max(reg_rows, key=lambda r: r['CV R2 (train)'])['Model']
         joblib.dump({'model': reg_fit[best_reg], 'name': best_reg, 'features': list(X.columns), 'kind': kind},
                     os.path.join(OUT, 'salary_model.joblib'))

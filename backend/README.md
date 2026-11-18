@@ -90,7 +90,11 @@ engine — nothing breaks either way.
 | POST | `/api/students/<roll_number>/snapshots` | Add a snapshot `{date, prob}` |
 | DELETE | `/api/students/<roll_number>/snapshots` | Clear snapshot history |
 | GET | `/api/stats/<roll_number>` | Anonymous peer stats: student count, average probability, your percentile |
+| POST | `/api/ml-train` | Start retraining from `ml/placement_data.csv` (local computer only) |
+| GET | `/api/ml-train-status` | Read the running/finished training log (local computer only) |
 | POST | `/api/chat` | Ask the AI Career Assistant `{message, context}` → `{reply}` (needs `ANTHROPIC_API_KEY`) |
+
+The ML Lab's **Train model now** button uses these local-only endpoints. It retrains the bundled dataset; student profiles entered in the website are not automatically added to the CSV.
 
 ## 5. Notes for your report / viva
 

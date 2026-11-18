@@ -35,11 +35,15 @@ import hmac
 import secrets
 import sqlite3
 import requests
+import subprocess
+import sys
+import threading
 from datetime import datetime, timezone, timedelta
 from functools import wraps
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 CORS(app)
@@ -551,7 +555,78 @@ def evaluate_answer():
 # Trained ML model (created by ml/train_model.py)
 # ---------------------------------------------------------------------
 ML_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'ml', 'output')
+ML_ROOT = os.path.dirname(os.path.abspath(ML_DIR))
+ML_SCRIPT = os.path.join(ML_ROOT, 'train_model.py')
+ML_CSV = os.path.join(ML_ROOT, 'placement_data.csv')
 _ml_bundle = None
+_ml_train_lock = threading.Lock()
+_ml_train_state = {'running': False, 'success': None, 'message': 'No training run yet.', 'log': ''}
+
+
+def run_ml_training():
+    """Run the checked-in training pipeline and retain its console output for the ML Lab."""
+    global _ml_bundle
+    try:
+        process = subprocess.Popen(
+            [sys.executable, '-u', ML_SCRIPT, ML_CSV], cwd=ML_ROOT,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, encoding='utf-8', errors='replace', bufsize=1)
+        timeout_timer = threading.Timer(
+            300, lambda: process.kill() if process.poll() is None else None)
+        timeout_timer.daemon = True
+        timeout_timer.start()
+        with process.stdout:
+            for line in process.stdout:
+                with _ml_train_lock:
+                    _ml_train_state['log'] += line
+                    if line.strip():
+                        _ml_train_state['message'] = line.strip()
+        code = process.wait()
+        timeout_timer.cancel()
+        with _ml_train_lock:
+            _ml_train_state['running'] = False
+            _ml_train_state['success'] = code == 0
+            _ml_train_state['message'] = 'Training complete.' if code == 0 else 'Training failed; see the log.'
+            if code == 0:
+                _ml_bundle = None
+    except Exception as exc:
+        with _ml_train_lock:
+            _ml_train_state['running'] = False
+            _ml_train_state['success'] = False
+            _ml_train_state['message'] = 'Training failed: ' + str(exc)
+            _ml_train_state['log'] += '\n' + str(exc)
+
+
+def local_training_request():
+    """Training writes model artifacts, so allow it only from this computer."""
+    if request.remote_addr not in ('127.0.0.1', '::1'):
+        return False
+    origin = request.headers.get('Origin', '')
+    if not origin or origin == 'null':  # local file:// frontend or a local command-line request
+        return True
+    return urlparse(origin).hostname in ('localhost', '127.0.0.1', '::1')
+
+
+@app.route('/api/ml-train', methods=['POST'])
+def ml_train_start():
+    if not local_training_request():
+        return jsonify({'error': 'Model training is available only from the local computer.'}), 403
+    if not os.path.isfile(ML_SCRIPT) or not os.path.isfile(ML_CSV):
+        return jsonify({'error': 'Training script or dataset is missing.'}), 503
+    with _ml_train_lock:
+        if _ml_train_state['running']:
+            return jsonify({'running': True, 'message': _ml_train_state['message']}), 409
+        _ml_train_state.update(running=True, success=None, message='Starting training…', log='')
+    threading.Thread(target=run_ml_training, daemon=True).start()
+    return jsonify({'running': True, 'message': 'Training started from ml/placement_data.csv.'}), 202
+
+
+@app.route('/api/ml-train-status', methods=['GET'])
+def ml_train_status():
+    if not local_training_request():
+        return jsonify({'error': 'Training status is available only from the local computer.'}), 403
+    with _ml_train_lock:
+        return jsonify(dict(_ml_train_state))
 
 
 def load_ml():
