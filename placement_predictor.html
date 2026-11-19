@@ -413,6 +413,9 @@ html[data-theme="dark"] .chat-panel{background:rgba(22,29,46,0.75); border:1px s
 .chat-input-row button{
   background:var(--indigo);color:#fff;border:none;border-radius:9px;padding:0 14px;cursor:pointer;font-weight:700;
 }
+.chat-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.chat-head-copy{min-width:0}.chat-close{width:30px;height:30px;flex:none;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:19px;line-height:1;cursor:pointer}.chat-close:hover{background:rgba(255,255,255,.24)}.chat-status{display:inline-flex;align-items:center;gap:6px;margin-top:5px;font-size:10px!important;opacity:.9}.chat-status:before{content:"";width:6px;height:6px;border-radius:50%;background:#a8e5ba}.chat-msg{white-space:pre-wrap;overflow-wrap:anywhere;animation:chatPop .18s ease-out}.chat-msg.typing{display:flex;align-items:center;gap:4px;min-width:47px}.typing-dot{width:5px;height:5px;border-radius:50%;background:#819087;animation:typingBounce .9s infinite ease-in-out}.typing-dot:nth-child(2){animation-delay:.12s}.typing-dot:nth-child(3){animation-delay:.24s}.chat-suggest{padding-top:2px}.chat-suggest button{transition:background .16s,border-color .16s,transform .16s}.chat-suggest button:hover{background:var(--indigo-bg);border-color:var(--indigo);transform:translateY(-1px)}.chat-input-row input:focus{outline:2px solid rgba(49,95,75,.22);border-color:var(--indigo)}.chat-input-row button:disabled{opacity:.55;cursor:wait}.chat-input-row input:disabled{opacity:.7}@keyframes chatPop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+@media(max-width:520px){.chat-panel{right:12px;bottom:82px;width:min(380px,calc(100vw - 24px));max-height:min(560px,calc(100dvh - 110px))}.chat-fab{right:16px;bottom:16px}}
+@media(prefers-reduced-motion:reduce){.chat-msg,.typing-dot{animation:none!important}.chat-suggest button{transition:none}}
 
 button.btn{
   font-size:13.5px;font-weight:700;padding:10px 16px;border-radius:9px;border:1px solid rgba(255,255,255,0.5);
@@ -1088,12 +1091,12 @@ html[data-theme="dark"] .home-hero-split{background:linear-gradient(115deg,rgba(
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
 </button>
 <div class="chat-panel" id="chatPanel">
-  <div class="chat-head"><b>AI Career Assistant</b><span id="chatHeadSub">Rule-based Q&amp;A over your profile â€” connect a backend with an API key for real Claude answers</span></div>
+  <div class="chat-head"><div class="chat-head-copy"><b>Placement Prep Assistant</b><span class="chat-status" id="chatHeadSub">Profile-aware guidance · local demo mode</span></div><button class="chat-close" id="chatClose" type="button" aria-label="Close chat">×</button></div>
   <div class="chat-body" id="chatBody"></div>
   <div class="chat-suggest" id="chatSuggest"></div>
   <div class="chat-input-row">
-    <input type="text" id="chatInput" placeholder="Ask about your placement chancesâ€¦">
-    <button id="chatSendBtn">Send</button>
+    <input type="text" id="chatInput" maxlength="300" placeholder="Ask about your placement prep…" aria-label="Message the placement assistant">
+    <button id="chatSendBtn" aria-label="Send message">Send</button>
   </div>
 </div>
 
@@ -1337,6 +1340,14 @@ const AIEngine = {
   },
   chatbotRespond(query, state){
     const q = query.toLowerCase();
+    if(/^(hi|hello|hey|hii|namaste|namaskar)\b/.test(q)) return `Hi! Your current readiness estimate is ${Math.round(state.prob)}% (${state.statusLabel}). I can help you understand your score, find a next step, or prepare for an interview. What would you like to work on?`;
+    if(q.includes('formula') || q.includes('calculate') || q.includes('benchmark') || (q.includes('how is') && (q.includes('score') || q.includes('percentage')))) return `This ${Math.round(state.prob)}% is a profile-based readiness estimate. It combines academic, technical, aptitude, communication and experience indicators against the project's chosen benchmarks. It is guidance, not a trained-model probability or a guarantee of placement. Open Analytics or Dashboard to see the factor breakdown.`;
+    if(q.includes('project') || q.includes('portfolio')) return `Your profile lists ${state.d.projects} project(s). For third year, choose one project related to your target role, finish a small working feature, put the code and a clear README on GitHub, and practise explaining your own contribution. A demonstrable project is more useful than several unfinished ones.`;
+    if(q.includes('internship') || q.includes('experience')) return `Your profile lists ${state.d.internships} internship(s). If you haven't done one yet, try a small team project, a verified campus role, or a well-scoped open-source contribution while applying to internships. Keep the work and outcome concrete on your resume; don't claim experience you haven't had.`;
+    if(q.includes('third year') || q.includes('3rd year') || q.includes('third-year')) return `For third year, keep the plan manageable: pick one target role, strengthen DSA or role-specific fundamentals, complete one project you can demo, practise aptitude weekly, and start applying to internships. Your current weakest profile areas are ${state.swr.weakKeys.slice(0,2).map(k=>NAME_MAP[k]).join(' and ')||'not obvious'}; use those to choose this week's task.`;
+    if(q.includes('interview') || q.includes('mock')) return `Try the Interview tab for a practice question. A useful routine is: answer in 1–2 minutes, explain your reasoning, give one example from a project, then note one improvement. Your suggested career fit is ${state.roleMatches[0]?.name||'still being calculated'}.`;
+    if(q.includes('dataset') || q.includes('train') || q.includes('ml model')) return `The ML Lab trains and evaluates the placement classifier from its CSV records using a train/test split and model comparison. This chat assistant is a separate feature: in local demo mode it uses profile-aware rules; with the configured backend it can call the connected language model. The readiness percentage shown here should not be described as the classifier's test accuracy.`;
+    if(q.includes('cgpa') || q.includes('marks') || q.includes('academic')) return `Your current CGPA is ${state.d.cgpa}/10, with ${state.d.tenth}% in 10th and ${state.d.twelfth}% in 12th. Keep meeting each company's published eligibility criteria; improving grades can help, but pair it with role skills, projects and interview practice.`;
     const bigTech = ['google','amazon','microsoft','meta','apple','netflix','flipkart product'];
     const massRecruiters = ['tcs','infosys','wipro','cognizant','accenture','capgemini','hcl'];
     if(bigTech.some(c=>q.includes(c))){
@@ -1347,12 +1358,12 @@ const AIEngine = {
       const tier = state.companyReadiness.find(t=>t.name.includes('Tier 2'));
       return `That falls in our "Tier 2 â€” mass IT recruiters" bracket. Your readiness there is ${tier.score}%. ${tier.weakest.length ? 'Focus on: '+tier.weakest[0].name+'.' : 'You already meet this bar.'}`;
     }
-    if(q.includes('learn next') || q.includes('what should i learn') || q.includes('what to learn')){
+    if(q.includes('learn next') || q.includes('what should i learn') || q.includes('what to learn') || q.includes('kya sikhu') || q.includes('kya seekhu')){
       const top = state.swr.ranked[0];
       const rule = REC_RULES[top];
       return rule ? `Focus next on: ${rule.title}. ${rule.desc}` : 'Your profile looks solid â€” keep building projects and prepping for interviews.';
     }
-    if(q.includes('why') && (q.includes('low')||q.includes('score')||q.includes('probability'))){
+    if((q.includes('why') || q.includes('kyu') || q.includes('kam')) && (q.includes('low')||q.includes('score')||q.includes('probability')||q.includes('mera'))){
       const weak = state.swr.weakKeys.slice(0,2).map(k=>NAME_MAP[k]);
       return weak.length ? `Your score is mainly held back by: ${weak.join(' and ')}. Improving these moves your readiness estimate fastest.` : 'Your score is solid â€” no major weak spots detected right now.';
     }
@@ -2334,9 +2345,15 @@ function addChatMsg(who, text){
   const div=document.createElement('div'); div.className='chat-msg '+who; div.textContent=text;
   body.appendChild(div); body.scrollTop=body.scrollHeight;
 }
+function setChatBusy(busy){
+  const input=document.getElementById('chatInput'), button=document.getElementById('chatSendBtn'), box=document.getElementById('chatBody');
+  input.disabled=busy; button.disabled=busy; button.textContent=busy?'…':'Send';
+  const old=document.getElementById('chatTyping'); if(old) old.remove();
+  if(busy){const typing=document.createElement('div');typing.id='chatTyping';typing.className='chat-msg bot typing';typing.setAttribute('aria-label','Assistant is thinking');typing.innerHTML='<i class="typing-dot"></i><i class="typing-dot"></i><i class="typing-dot"></i>';box.appendChild(typing);box.scrollTop=box.scrollHeight;}
+}
 function renderChatSuggestions(){
   const box=document.getElementById('chatSuggest');
-  const suggestions=['Can I get placed in Google?','What should I learn next?','Why is my placement score low?','How can I improve my communication skills?'];
+  const suggestions=['What should I learn next?','Why is my score low?','Suggest a project for me','Help me prepare for interviews'];
   box.innerHTML='';
   suggestions.forEach(s=>{
     const b=document.createElement('button'); b.textContent=s;
@@ -2358,7 +2375,9 @@ function buildChatContext(){
 }
 
 async function handleChatQuery(q){
-  addChatMsg('user', q);
+  q=q.trim().slice(0,300); if(!q || document.getElementById('chatSendBtn').disabled) return;
+  addChatMsg('user', q); setChatBusy(true);
+  try{
   if(backendConnected){
     try{
       const res = await authedFetch('/api/chat', {
@@ -2371,22 +2390,26 @@ async function handleChatQuery(q){
       // back to the rule-based engine rather than showing a raw error.
     }catch(e){ /* backend unreachable for this call â€” fall back below */ }
   }
-  const resp = AIEngine.chatbotRespond(q, STATE);
-  setTimeout(()=>addChatMsg('bot', resp), 200);
+    const resp = AIEngine.chatbotRespond(q, STATE);
+    await new Promise(resolve=>setTimeout(resolve,260)); addChatMsg('bot', resp);
+  }finally{ setChatBusy(false); }
 }
 document.getElementById('chatFab').addEventListener('click', ()=>{
-  document.getElementById('chatPanel').classList.toggle('open');
+  const panel=document.getElementById('chatPanel'); panel.classList.toggle('open');
+  document.getElementById('chatHeadSub').textContent=backendConnected?'Connected assistant · uses your current profile':'Profile-aware guidance · local demo mode';
+  if(panel.classList.contains('open')) setTimeout(()=>document.getElementById('chatInput').focus(),80);
   if(document.getElementById('chatBody').children.length===0){
     const intro = backendConnected
-      ? "Hi! I'm your AI Career Assistant, now backed by real Claude AI. Ask me things like \"Can I get placed in Google?\" or \"What should I learn next?\""
-      : "Hi! I'm your AI Career Assistant (rule-based right now â€” connect the backend with an API key for full AI answers). Ask me things like \"Can I get placed in Google?\" or \"What should I learn next?\"";
+      ? `Hi! I can use your current profile to help with placement prep. Your readiness estimate is ${Math.round(STATE.prob)}%. Ask for a next step, a project idea, or interview practice. This is guidance, not a hiring decision.`
+      : `Hi! I can use your current profile to suggest placement-prep next steps. Your readiness estimate is ${Math.round(STATE.prob)}%. Ask about your score, projects, skills, or interview practice. This demo assistant uses local guidance rules.`;
     addChatMsg('bot', intro);
     renderChatSuggestions();
   }
 });
+document.getElementById('chatClose').addEventListener('click', ()=>document.getElementById('chatPanel').classList.remove('open'));
 document.getElementById('chatSendBtn').addEventListener('click', ()=>{
   const input=document.getElementById('chatInput'); const val=input.value.trim();
-  if(!val) return; handleChatQuery(val); input.value='';
+  if(!val) return; input.value=''; handleChatQuery(val);
 });
 document.getElementById('chatInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') document.getElementById('chatSendBtn').click(); });
 
