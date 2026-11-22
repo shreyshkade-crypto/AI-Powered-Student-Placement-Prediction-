@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Runway â€” Placement Prep, Made Practical</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F7F6FE; --card:#FFFFFF; --card-2:#FBFAFF;
+  --ink:#14142B; --body:#5B5875; --muted:#8A87A0;
+  --indigo:#5B4FE5; --indigo-2:#7C6CF6; --indigo-bg:#EEEBFC;
+  --border:#E4E1F5;
+  --good:#1E9E6B; --good-bg:rgba(30,158,107,0.12);
+  --bad:#DC2626; --bad-bg:rgba(220,38,38,0.10);
+  --warn:#B4790A; --warn-bg:rgba(217,158,6,0.14);
+  --shadow:0 4px 18px rgba(20,20,43,0.06);
+  --shadow-lg:0 14px 34px rgba(20,20,43,0.10);
+}
+html[data-theme="dark"]{
+  --bg:#0F1523; --card:#161D2E; --card-2:#1B2338;
+  --ink:#EDEEF5; --body:#B7BCCF; --muted:#7C86A3;
+  --indigo:#8B7FF5; --indigo-2:#A79BFF; --indigo-bg:rgba(139,127,245,0.16);
+  --border:#2A3350;
+  --good:#34D399; --good-bg:rgba(52,211,153,0.14);
+  --bad:#F87171; --bad-bg:rgba(248,113,113,0.14);
+  --warn:#FBBF24; --warn-bg:rgba(251,191,36,0.14);
+  --shadow:0 4px 18px rgba(0,0,0,0.3);
+  --shadow-lg:0 14px 34px rgba(0,0,0,0.4);
+}
+html[data-theme="dark"] .topnav{background:rgba(15,21,35,0.92);}
+html[data-theme="dark"] .icon-btn, html[data-theme="dark"] button.btn{background:var(--card);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--body);
+  font-family:'Plus Jakarta Sans',sans-serif; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh; position:relative;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(38vw 38vw at 10% 8%, rgba(91,79,229,0.30), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%, rgba(124,108,246,0.26), transparent 60%),
+    radial-gradient(40vw 40vw at 25% 92%, rgba(30,158,107,0.16), transparent 60%),
+    radial-gradient(30vw 30vw at 85% 85%, rgba(251,191,36,0.14), transparent 60%);
+  filter:blur(60px); animation:blobfloat 22s ease-in-out infinite alternate;
+}
+html[data-theme="dark"] body::before{
+  background:
+    radial-gradient(38vw 38vw at 10% 8%, rgba(139,127,245,0.35), transparent 60%),
+    radial-gradient(34vw 34vw at 92% 18%, rgba(167,155,255,0.22), transparent 60%),
+    radial-gradient(40vw 40vw at 25% 92%, rgba(52,211,153,0.16), transparent 60%),
+    radial-gradient(30vw 30vw at 85% 85%, rgba(251,191,36,0.12), transparent 60%);
+}
+@keyframes blobfloat{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(-2%,2%) scale(1.06);}
+}
+@media (prefers-reduced-motion: reduce){ body::before{ animation:none; } }
+h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);margin:0;}
+.mono{font-family:'JetBrains Mono',monospace;}
+button{font-family:inherit;}
+a{color:inherit;}
+
+/* ===== TOP NAV ===== */
+.topnav{
+  position:sticky;top:0;z-index:40;background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(18px) saturate(1.4); -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid rgba(255,255,255,0.4);
+  box-shadow:0 8px 30px rgba(20,20,43,0.06);
+}
+html[data-theme="dark"] .topnav{background:rgba(22,29,46,0.55); border-bottom:1px solid rgba(255,255,255,0.06);}
+.topnav-inner{
+  max-width:1280px;margin:0 auto;padding:12px 24px;
+  display:flex;align-items:center;gap:18px;
+}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:var(--ink);flex:none;}
+.logo .accent{color:var(--indigo);}
+.tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{
+  border:none;background:none;padding:9px 13px;border-radius:9px;
+  font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--indigo);}
+.tab-btn.active{background:var(--indigo-bg);color:var(--indigo);}
+.nav-icons{display:flex;align-items:center;gap:8px;flex:none;}
+.icon-btn{
+  position:relative;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,0.5);
+  background:rgba(255,255,255,0.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--body);
+  box-shadow:0 2px 8px rgba(20,20,43,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:transform .15s ease;
+}
+.icon-btn:hover{color:var(--indigo);border-color:var(--indigo);transform:translateY(-1px) scale(1.05);}
+.icon-btn:active{transform:scale(0.95);}
+html[data-theme="dark"] .icon-btn{background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);}
+.icon-btn .badge-dot{
+  position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;
+  background:var(--bad);color:#fff;font-size:9.5px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;border:2px solid #fff;
+}
+
+/* ===== AI INSIGHT STRIP (persistent, every page) ===== */
+.insight-strip{
+  background:linear-gradient(90deg, var(--indigo), var(--indigo-2));
+  color:#fff;
+}
+.insight-strip-inner{
+  max-width:1280px;margin:0 auto;padding:10px 24px;
+  display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;
+}
+.insight-strip b{font-weight:800;}
+.insight-strip .tag{
+  font-size:10.5px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;
+  background:rgba(255,255,255,0.2);padding:3px 9px;border-radius:999px;flex:none;
+}
+.insight-strip .go{margin-left:auto;font-weight:700;text-decoration:none;color:#fff;white-space:nowrap;font-size:12.5px;}
+
+/* ===== NOTIFICATIONS PANEL ===== */
+.notif-panel{
+  position:absolute;top:56px;right:24px;width:320px;background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(22px) saturate(1.4); -webkit-backdrop-filter:blur(22px) saturate(1.4);
+  border:1px solid rgba(255,255,255,0.5);border-radius:14px;box-shadow:var(--shadow-lg);
+  z-index:50;display:none;overflow:hidden;
+}
+html[data-theme="dark"] .notif-panel{background:rgba(22,29,46,0.7); border:1px solid rgba(255,255,255,0.08);}
+.notif-panel.open{display:block;}
+.notif-panel .np-head{padding:14px 16px;border-bottom:1px solid var(--border);font-weight:800;font-size:13.5px;color:var(--ink);}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12.5px;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item .ni-title{font-weight:700;color:var(--ink);margin-bottom:2px;}
+.notif-item .ni-body{color:var(--muted);}
+.notif-empty{padding:20px 16px;text-align:center;color:var(--muted);font-size:12.5px;}
+
+/* ===== PAGES ===== */
+.page{display:none;max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+.page.active{display:block;}
+.page-head{margin-bottom:22px;}
+.page-head .eyebrow{
+  font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--indigo);margin:0 0 6px;
+}
+.page-head h2{font-size:24px;font-weight:800;}
+.page-head p{color:var(--muted);font-size:13.5px;margin:6px 0 0;max-width:640px;}
+
+.card{
+  background:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.5); border-radius:18px; padding:22px;
+  box-shadow:var(--shadow); backdrop-filter:blur(18px) saturate(1.3); -webkit-backdrop-filter:blur(18px) saturate(1.3);
+  transition:transform .25s ease, box-shadow .25s ease; transform-style:preserve-3d;
+}
+.card:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg);}
+html[data-theme="dark"] .card{background:rgba(22,29,46,0.55); border:1px solid rgba(255,255,255,0.08);}
+.card + .card{margin-top:18px;}
+.card h3{font-size:16px;font-weight:800;margin-bottom:4px;}
+.card .sub{color:var(--muted);font-size:12.5px;margin:0 0 16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid-3{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;letter-spacing:0.02em;}
+.pill.good{background:var(--good-bg);color:var(--good);}
+.pill.bad{background:var(--bad-bg);color:var(--bad);}
+.pill.warn{background:var(--warn-bg);color:var(--warn);}
+.pill.indigo{background:var(--indigo-bg);color:var(--indigo);}
+
+/* ---- Home page ---- */
+.home-hero{
+  background:linear-gradient(135deg, var(--indigo), var(--indigo-2));
+  border-radius:22px;padding:32px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 20px 50px -12px rgba(91,79,229,0.55), inset 0 1px 0 rgba(255,255,255,0.25);
+  transform:perspective(900px) rotateX(0.5deg);
+}
+.home-hero::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,0.18), transparent 45%);
+}
+.home-hero .hh-tag{font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;opacity:0.85;margin-bottom:10px;}
+.home-hero h2{color:#fff;font-size:26px;margin-bottom:10px;}
+.home-hero p{opacity:0.92;font-size:14px;max-width:640px;line-height:1.6;margin:0 0 20px;}
+.home-hero .hh-score{display:flex;align-items:baseline;gap:8px;}
+.home-hero .hh-score .n{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:46px;}
+.home-hero .hh-score .l{font-size:13px;opacity:0.85;}
+.rec-mini{
+  display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;
+  background:var(--card-2);border:1px solid var(--border);
+}
+.rec-mini .ico{
+  flex:none;width:34px;height:34px;border-radius:9px;background:var(--indigo-bg);color:var(--indigo);
+  display:flex;align-items:center;justify-content:center;
+}
+.rec-mini strong{display:block;font-size:13px;color:var(--ink);margin-bottom:2px;}
+.rec-mini span{font-size:12px;color:var(--muted);}
+
+/* ---- Dashboard / forms ---- */
+.field{margin-bottom:14px;}
+.field label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink);margin-bottom:6px;font-weight:600;}
+.field label span.val{font-family:'JetBrains Mono',monospace;color:var(--indigo);font-weight:700;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--indigo);cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px var(--indigo);}
+input[type=number], textarea, select{
+  width:100%;background:#FAFAFE;border:1px solid var(--border);border-radius:8px;
+  padding:9px 11px;color:var(--ink);font-size:14px;font-family:inherit;
+}
+input[type=number]:focus, textarea:focus{outline:none;border-color:var(--indigo);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+textarea{resize:vertical;min-height:90px;font-size:13px;}
+fieldset{border:none;padding:0;margin:0 0 20px;}
+fieldset legend{font-size:11px;letter-spacing:0.06em;color:var(--indigo);font-weight:800;margin-bottom:10px;text-transform:uppercase;}
+
+.upload-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.upload-btn{
+  flex:none;position:relative;overflow:hidden;font-size:12px;font-weight:700;padding:8px 12px;border-radius:7px;
+  border:1px dashed var(--border);background:var(--card-2);color:var(--muted);cursor:pointer;white-space:nowrap;
+}
+.upload-btn:hover{border-color:var(--indigo);color:var(--indigo);}
+.upload-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.file-chip{
+  font-size:12px;color:var(--good);background:var(--good-bg);border:1px solid rgba(30,158,107,0.35);
+  border-radius:6px;padding:5px 9px;display:none;align-items:center;gap:6px;max-width:100%;overflow:hidden;
+}
+.file-chip .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-chip .rm{cursor:pointer;color:var(--bad);font-weight:700;flex:none;}
+.cert-file-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.extract-hint{font-size:11.5px;color:var(--muted);margin-top:6px;}
+.apply-mini{font-size:11.5px;font-weight:700;color:var(--indigo);background:none;border:none;cursor:pointer;padding:0;margin-left:6px;text-decoration:underline;}
+.detected{font-size:12.5px;color:var(--good);background:var(--good-bg);border:1px solid rgba(30,158,107,0.35);border-radius:8px;padding:9px 11px;margin-top:10px;display:none;}
+
+.hero-runway{background:rgba(255,255,255,0.5);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border:1px solid rgba(255,255,255,0.5);border-radius:18px;padding:26px;box-shadow:var(--shadow-lg);}
+html[data-theme="dark"] .hero-runway{background:rgba(22,29,46,0.55);border:1px solid rgba(255,255,255,0.08);}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.hero-label{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:800;}
+.hero-number{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:56px;line-height:1;color:var(--ink);display:flex;align-items:baseline;gap:6px;}
+.hero-number span.pct{font-size:26px;color:var(--muted);}
+.hero-status{font-size:18px;font-weight:800;margin-top:8px;}
+.hero-desc{color:var(--muted);font-size:13.5px;max-width:360px;margin-top:6px;}
+.runway-svg{width:100%;height:auto;display:block;margin-top:18px;}
+
+.chart-box{height:260px;position:relative;}
+.gap-row{margin-bottom:14px;}
+.gap-row .g-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+.gap-row .g-head .name{color:var(--ink);font-weight:600;}
+.gap-row .g-head .metric{font-family:'JetBrains Mono',monospace;color:var(--muted);}
+.g-track{height:8px;border-radius:5px;background:var(--indigo-bg);position:relative;overflow:visible;}
+.g-fill{height:100%;border-radius:5px;transition:width .5s ease;}
+.g-bench{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--muted);}
+
+.rec-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+.rec-item{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);}
+.rec-item .dot{flex:none;width:9px;height:9px;border-radius:50%;margin-top:5px;}
+.rec-item .txt strong{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px;}
+.rec-item .txt span{font-size:12.5px;color:var(--muted);}
+
+.strengths-weak{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media (max-width:760px){.strengths-weak{grid-template-columns:1fr;}}
+.sw-col h4{font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 10px;}
+.sw-col.str h4{color:var(--good);} .sw-col.weak h4{color:var(--bad);}
+.sw-col ul{margin:0;padding-left:18px;font-size:13px;color:var(--ink);}
+.sw-col li{margin-bottom:6px;}
+
+/* ---- Companies ---- */
+.company-row{padding:16px;border-radius:12px;background:var(--card-2);border:1px solid var(--border);margin-bottom:12px;}
+.company-row .cr-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.company-row .cr-head h4{font-size:14.5px;}
+.company-row .cr-score{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:16px;}
+.cr-bar{height:7px;border-radius:4px;background:var(--indigo-bg);margin-bottom:10px;}
+.cr-bar .fill{height:100%;border-radius:4px;}
+.company-row .cr-why{font-size:12.5px;color:var(--muted);margin:0 0 4px;}
+.company-row .cr-actions{font-size:12.5px;color:var(--ink);margin:6px 0 0;}
+.elig-note{font-size:12px;color:var(--muted);margin:0 0 16px;font-style:italic;}
+
+/* ---- Skills ---- */
+.course-row{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);margin-bottom:10px;}
+.course-row .ico{flex:none;width:32px;height:32px;border-radius:8px;background:var(--indigo-bg);color:var(--indigo);display:flex;align-items:center;justify-content:center;}
+.course-row strong{display:block;font-size:13.5px;color:var(--ink);}
+.course-row span{font-size:12px;color:var(--muted);}
+
+/* ---- Interview ---- */
+.q-card{padding:18px;border-radius:12px;background:var(--indigo-bg);border:1px solid var(--border);margin-bottom:16px;}
+.q-card .q-tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--indigo);margin-bottom:6px;}
+.q-card p{font-size:15px;color:var(--ink);font-weight:600;margin:0;}
+.feedback-box{margin-top:16px;padding:16px;border-radius:12px;background:var(--card-2);border:1px solid var(--border);display:none;}
+.feedback-box.show{display:block;}
+.feedback-box .fb-score{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:22px;color:var(--indigo);}
+.feedback-box ul{margin:10px 0 0;padding-left:18px;font-size:13px;color:var(--ink);}
+.feedback-box li{margin-bottom:5px;}
+
+/* ---- Analytics ---- */
+.snap-row{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid var(--border);}
+.snap-row:last-child{border-bottom:none;}
+
+/* ---- Chatbot ---- */
+.site-footer{background:#fff;border-top:1px solid var(--border);margin-top:20px;}
+.site-footer-inner{max-width:1180px;margin:0 auto;padding:44px 24px 28px;display:grid;grid-template-columns:1.6fr 1fr;gap:32px;}
+@media (max-width:760px){.site-footer-inner{grid-template-columns:1fr;gap:26px;}}
+.footer-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:var(--ink);margin-bottom:10px;}
+.footer-brand .accent{color:var(--indigo);}
+.footer-about{font-size:12.5px;color:var(--muted);line-height:1.6;max-width:380px;margin:0 0 16px;}
+.footer-social{display:flex;gap:10px;}
+.footer-social a{
+  width:32px;height:32px;border-radius:8px;background:var(--indigo-bg);color:var(--indigo);
+  display:flex;align-items:center;justify-content:center;text-decoration:none;
+}
+.footer-social a:hover{background:var(--indigo);color:#fff;}
+.footer-col h4{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:0 0 14px;}
+.footer-col a, .footer-col button.linklike{
+  display:block;font-size:13px;color:var(--body);text-decoration:none;margin-bottom:11px;
+  background:none;border:none;padding:0;cursor:pointer;text-align:left;font-family:inherit;
+}
+.footer-col a:hover, .footer-col button.linklike:hover{color:var(--indigo);}
+.footer-bottom{
+  border-top:1px solid var(--border);max-width:1180px;margin:0 auto;padding:16px 24px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11.5px;color:var(--muted);
+}
+
+.whatsapp-fab{
+  position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;
+  background:#25D366;color:#fff;border:none;box-shadow:0 10px 26px rgba(37,211,102,0.4);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:60;text-decoration:none;
+}
+
+.legal-modal{
+  position:fixed;inset:0;background:rgba(20,20,43,0.45);z-index:80;display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.legal-modal.open{display:flex;}
+.legal-modal-box{
+  background:rgba(255,255,255,0.75); backdrop-filter:blur(22px) saturate(1.4); -webkit-backdrop-filter:blur(22px) saturate(1.4);
+  border:1px solid rgba(255,255,255,0.5); border-radius:16px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;
+  padding:28px;box-shadow:var(--shadow-lg);
+}
+html[data-theme="dark"] .legal-modal-box{background:rgba(22,29,46,0.85); border:1px solid rgba(255,255,255,0.08);}
+.legal-modal-box h3{margin-bottom:12px;}
+.legal-modal-box p{font-size:13px;color:var(--body);line-height:1.7;margin:0 0 12px;}
+.legal-modal-box .close-legal{margin-top:10px;}
+
+
+/* ---- Jobs / JD matcher / tracker ---- */
+.job-row{padding:14px 16px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);margin-bottom:10px;}
+.job-row .jr-head{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.job-row .jr-head strong{font-size:14px;color:var(--ink);}
+.job-row .jr-head span{font-size:12px;color:var(--muted);}
+.job-row p{font-size:12.5px;color:var(--muted);margin:6px 0;}
+.job-row .jr-actions{display:flex;gap:8px;margin-top:8px;}
+.job-row .jr-actions button{font-size:12px;padding:6px 10px;}
+
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;overflow-x:auto;}
+@media (max-width:980px){.kanban{grid-template-columns:1fr;}}
+.kanban-col{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px;min-height:80px;}
+.kanban-col h4{font-size:11.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);margin:2px 4px 10px;}
+.app-card{background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:8px;box-shadow:var(--shadow);}
+.app-card .ac-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.app-card strong{font-size:13px;color:var(--ink);display:block;}
+.app-card span{font-size:11.5px;color:var(--muted);}
+.app-card .ac-move{display:flex;gap:5px;margin-top:8px;}
+.app-card .ac-move button{flex:1;font-size:10.5px;padding:4px;border-radius:5px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--body);}
+.app-card .ac-move button:hover{border-color:var(--indigo);color:var(--indigo);}
+.app-card .ac-del{background:none;border:none;color:var(--bad);cursor:pointer;font-size:13px;}
+
+/* ---- Tests ---- */
+.quiz-q{padding:16px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);margin-bottom:12px;}
+.quiz-q p.qtext{font-weight:700;color:var(--ink);font-size:14px;margin:0 0 10px;}
+.quiz-q label{display:block;font-size:13px;color:var(--body);padding:7px 10px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;cursor:pointer;}
+.quiz-q label:hover{border-color:var(--indigo);}
+.quiz-timer{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:20px;color:var(--indigo);}
+
+/* ---- Portfolio ---- */
+.portfolio-card{padding:16px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);margin-bottom:12px;}
+.portfolio-card h4{font-size:14.5px;margin-bottom:4px;}
+.portfolio-card p{font-size:12.5px;color:var(--muted);margin:0 0 8px;}
+.portfolio-card a{font-size:12px;color:var(--indigo);}
+
+/* ---- TPO ---- */
+.tpo-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.tpo-table th{text-align:left;padding:8px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;}
+.tpo-table td{padding:8px;border-bottom:1px solid var(--border);color:var(--ink);}
+.tpo-table tr:hover td{background:var(--indigo-bg);}
+
+.chat-fab{
+  position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,var(--indigo),var(--indigo-2));color:#fff;border:none;
+  box-shadow:0 10px 28px rgba(91,79,229,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  z-index:60;
+}
+.chat-panel{
+  position:fixed;bottom:92px;right:24px;width:340px;max-height:480px;background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(22px) saturate(1.4); -webkit-backdrop-filter:blur(22px) saturate(1.4);
+  border:1px solid rgba(255,255,255,0.5);border-radius:16px;box-shadow:var(--shadow-lg);
+  z-index:60;display:none;flex-direction:column;overflow:hidden;
+}
+html[data-theme="dark"] .chat-panel{background:rgba(22,29,46,0.75); border:1px solid rgba(255,255,255,0.08);}
+.chat-panel.open{display:flex;}
+.chat-head{padding:14px 16px;background:linear-gradient(90deg,var(--indigo),var(--indigo-2));color:#fff;}
+.chat-head b{display:block;font-size:14px;}
+.chat-head span{font-size:11px;opacity:0.85;}
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--card-2);}
+.chat-msg{max-width:85%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.5;}
+.chat-msg.bot{background:#fff;border:1px solid var(--border);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px;}
+.chat-msg.user{background:var(--indigo);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+.chat-suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px;background:var(--card-2);}
+.chat-suggest button{
+  font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+  background:#fff;color:var(--indigo);cursor:pointer;
+}
+.chat-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);}
+.chat-input-row input{
+  flex:1;border:1px solid var(--border);border-radius:9px;padding:9px 11px;font-size:12.5px;font-family:inherit;
+}
+.chat-input-row button{
+  background:var(--indigo);color:#fff;border:none;border-radius:9px;padding:0 14px;cursor:pointer;font-weight:700;
+}
+.chat-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.chat-head-copy{min-width:0}.chat-close{width:30px;height:30px;flex:none;border:1px solid rgba(255,255,255,.3);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:19px;line-height:1;cursor:pointer}.chat-close:hover{background:rgba(255,255,255,.24)}.chat-status{display:inline-flex;align-items:center;gap:6px;margin-top:5px;font-size:10px!important;opacity:.9}.chat-status:before{content:"";width:6px;height:6px;border-radius:50%;background:#a8e5ba}.chat-msg{white-space:pre-wrap;overflow-wrap:anywhere;animation:chatPop .18s ease-out}.chat-msg.typing{display:flex;align-items:center;gap:4px;min-width:47px}.typing-dot{width:5px;height:5px;border-radius:50%;background:#819087;animation:typingBounce .9s infinite ease-in-out}.typing-dot:nth-child(2){animation-delay:.12s}.typing-dot:nth-child(3){animation-delay:.24s}.chat-suggest{padding-top:2px}.chat-suggest button{transition:background .16s,border-color .16s,transform .16s}.chat-suggest button:hover{background:var(--indigo-bg);border-color:var(--indigo);transform:translateY(-1px)}.chat-input-row input:focus{outline:2px solid rgba(49,95,75,.22);border-color:var(--indigo)}.chat-input-row button:disabled{opacity:.55;cursor:wait}.chat-input-row input:disabled{opacity:.7}@keyframes chatPop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+@media(max-width:520px){.chat-panel{right:12px;bottom:82px;width:min(380px,calc(100vw - 24px));max-height:min(560px,calc(100dvh - 110px))}.chat-fab{right:16px;bottom:16px}}
+@media(prefers-reduced-motion:reduce){.chat-msg,.typing-dot{animation:none!important}.chat-suggest button{transition:none}}
+
+button.btn{
+  font-size:13.5px;font-weight:700;padding:10px 16px;border-radius:9px;border:1px solid rgba(255,255,255,0.5);
+  background:rgba(255,255,255,0.55); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  color:var(--ink);cursor:pointer; box-shadow:0 2px 6px rgba(20,20,43,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+button.btn:hover{border-color:var(--indigo);color:var(--indigo);transform:translateY(-1px);}
+button.btn:active{transform:translateY(0px) scale(0.98); box-shadow:0 1px 2px rgba(20,20,43,0.08);}
+button.btn.primary{background:linear-gradient(145deg,var(--indigo),var(--indigo-2));border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(91,79,229,0.35), inset 0 1px 0 rgba(255,255,255,0.3);}
+button.btn.primary:hover{box-shadow:0 8px 20px rgba(91,79,229,0.45), inset 0 1px 0 rgba(255,255,255,0.3);color:#fff;}
+html[data-theme="dark"] button.btn{background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);}
+
+footer.foot{text-align:center;color:var(--muted);font-size:12px;padding:30px 24px;}
+
+.arch-diagram{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--body);background:var(--card-2);
+  border:1px solid var(--border);border-radius:12px;padding:16px;line-height:1.9;overflow-x:auto;white-space:pre;}
+
+.ml-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+@media (max-width:760px){.ml-metrics{grid-template-columns:repeat(2,1fr);}}
+.ml-metric{border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:center;}
+.ml-metric b{display:block;font-size:22px;margin-bottom:2px;}
+.ml-metric span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.ml-table{width:100%;border-collapse:collapse;font-size:13px;}
+.ml-table th,.ml-table td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);}
+.ml-table th:first-child,.ml-table td:first-child{text-align:left;}
+.ml-table tr.best td{font-weight:800;}
+.ml-img{width:100%;max-width:460px;display:block;margin:0 auto;border-radius:8px;background:#fff;}
+.ml-banner{border:1px solid #B4790A;background:rgba(180,121,10,.12);border-radius:10px;padding:10px 14px;font-size:12.5px;margin-bottom:14px;}
+.ml-factor{display:grid;grid-template-columns:130px 1fr 60px;gap:10px;align-items:center;font-size:12.5px;margin:6px 0;}
+.ml-bar{height:10px;border-radius:6px;background:rgba(128,128,128,.18);position:relative;}
+.ml-bar i{position:absolute;top:0;bottom:0;border-radius:6px;}
+/* Focused visual finish */
+:root{--bg:#F0F4F2;--card:#FFFFFF;--card-2:#F7FAF8;--ink:#202923;--body:#59645D;--muted:#7E8981;--indigo:#315F4B;--indigo-2:#497B60;--indigo-bg:#E7EFE8;--border:#DDE6E1;--good:#28734F;--good-bg:rgba(40,115,79,.10);--warn:#A36E23;--warn-bg:rgba(163,110,35,.12);--shadow:0 2px 10px rgba(32,41,35,.045);--shadow-lg:0 12px 30px rgba(32,41,35,.10)}
+html[data-theme="dark"]{--bg:#171D19;--card:#202923;--card-2:#262F29;--ink:#F0F2EC;--body:#C0C9C1;--muted:#96A197;--indigo:#88B79A;--indigo-2:#A5C9AF;--indigo-bg:rgba(136,183,154,.14);--border:#354239;--good:#70C495;--good-bg:rgba(112,196,149,.12);--warn:#E5B768;--warn-bg:rgba(229,183,104,.12)}
+body::before{display:none}.topnav{background:var(--card);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:1px solid var(--border);box-shadow:none}.card{box-shadow:none;border-radius:10px}.btn,.tab-btn,.icon-btn{transition:none}.insight-strip{background:var(--card-2);color:var(--body);border-bottom:1px solid var(--border)}.insight-strip .tag{background:var(--indigo-bg);color:var(--indigo)}.insight-strip .go{color:var(--indigo)}.btn.primary{background:var(--indigo);border-color:var(--indigo);box-shadow:none}.chat-head{background:var(--indigo)}.chat-fab{background:var(--indigo);box-shadow:none}.home-hero{background:#E9EFE8;color:#33463A;border:1px solid #D8E3D8;border-radius:12px;box-shadow:none}.home-hero h2{color:#202923!important}.home-hero p,.home-hero .l{color:#59645D}.home-hero .n{color:#315F4B}.home-hero .btn{background:transparent!important;border-color:#AEBEAF!important;color:#315F4B!important}.prep-list{display:grid;gap:10px;margin-top:14px}.prep-list label{display:flex;align-items:flex-start;gap:10px;color:var(--ink);font-size:14px;cursor:pointer}.prep-list input{margin-top:4px;accent-color:var(--indigo);width:16px;height:16px;flex:none}.prep-list input:checked+span{text-decoration:line-through;color:var(--muted)}h1,h2,h3,h4,body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.home-hero .hh-tag{letter-spacing:.02em;font-weight:650;text-transform:none}
+body{background:radial-gradient(ellipse 60% 48% at 0% 0%,rgba(96,142,107,.10),transparent 78%),radial-gradient(ellipse 42% 40% at 100% 32%,rgba(194,165,119,.10),transparent 78%),var(--bg);background-attachment:fixed}
+html[data-theme="dark"] body{background:radial-gradient(ellipse 60% 48% at 0% 0%,rgba(74,119,87,.14),transparent 78%),radial-gradient(ellipse 42% 40% at 100% 32%,rgba(106,121,98,.10),transparent 78%),var(--bg);background-attachment:fixed}
+.prep-journey{margin-top:24px}.journey-heading{display:flex;align-items:end;justify-content:space-between;margin:0 2px 12px}.journey-heading h3{font-size:19px}.journey-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,1fr);gap:12px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x proximity}.journey-card{display:flex;min-height:154px;flex-direction:column;align-items:flex-start;gap:8px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--body);text-decoration:none;scroll-snap-align:start;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}.journey-card:hover{border-color:var(--indigo);background:var(--card-2);transform:translateY(-4px);box-shadow:0 8px 20px rgba(32,41,35,.08)}.journey-step{font:600 12px/1 system-ui,sans-serif;color:var(--indigo);letter-spacing:.08em}.journey-card strong{color:var(--ink);font-size:14px}.journey-card>span:not(.journey-step){font-size:12.5px;line-height:1.45}.journey-card b{margin-top:auto;color:var(--indigo);font-size:12px}@media(min-width:1100px){.journey-row{grid-auto-columns:minmax(0,1fr)}}@media(max-width:600px){.journey-row{grid-auto-columns:minmax(210px,76vw)}.journey-heading .sub{font-size:11px}}
+@keyframes pageEnter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:pageEnter .34s ease-out both}.journey-card{animation:cardEnter .42s ease-out both}.journey-card:nth-child(2){animation-delay:.04s}.journey-card:nth-child(3){animation-delay:.08s}.journey-card:nth-child(4){animation-delay:.12s}.journey-card:nth-child(5){animation-delay:.16s}
+.btn,.tab-btn,.icon-btn{transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease}.btn:hover{transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){.page.active,.journey-card{animation:none!important}.journey-card,.btn,.tab-btn,.icon-btn{transition:none!important}.journey-card:hover,.btn:hover{transform:none}}
+.home-hero-split{display:grid;grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(28px,4.5vw,58px);min-height:390px;position:relative;isolation:isolate;background:linear-gradient(118deg,#f8faf5 0%,#f3f7f2 52%,#edf5ef 100%);border-color:#dce8de;overflow:hidden}
+.home-hero-split:before{content:"";position:absolute;z-index:-1;width:430px;height:430px;border-radius:50%;right:-100px;top:-260px;background:radial-gradient(circle,rgba(172,204,169,.32),transparent 70%)}
+.home-hero-split:after{display:none}.hero-copy{position:relative;z-index:2}.home-hero-split .hh-tag{display:flex;align-items:center;gap:9px;color:#52735c;margin-bottom:18px;font-size:10px;letter-spacing:.12em;font-weight:750}.live-dot{width:8px;height:8px;border-radius:50%;background:#55a77a;box-shadow:0 0 0 4px rgba(85,167,122,.13)}
+.home-hero-split h2{font-size:clamp(32px,4vw,49px);line-height:1.08;letter-spacing:-.045em;margin:0 0 16px;max-width:550px}.home-hero-split h2 em{font-style:normal;color:#47765a}.home-hero-split p{max-width:440px;margin-bottom:19px;line-height:1.65}.home-hero-split .hh-score{gap:12px}.home-hero-split .hh-score .n{font-size:40px;letter-spacing:-.05em}.home-hero-split .hh-score .l{font-size:13px}.score-separator{padding:0 3px;color:#aab5aa}.home-hero-split .btn{background:#315f4b!important;border:1px solid #315f4b!important;color:white!important;border-radius:7px;padding:12px 16px}.hero-footnote{display:flex;align-items:center;gap:8px;margin-top:17px;color:#748077;font-size:11px}.hero-check{display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#e2eee4;color:#47765a;font-weight:800}
+.hero-scene{position:relative;min-height:290px;padding:19px 22px 14px;border:1px solid rgba(194,211,196,.8);border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(242,248,241,.94));box-shadow:0 14px 38px rgba(60,91,67,.08);overflow:hidden}.scene-topline{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.13em;font-weight:750;color:#7c8b7f}.scene-term{letter-spacing:0;text-transform:none;font-size:11px;color:#54665a}.scene-term i{display:inline-block;width:6px;height:6px;margin-left:5px;border-radius:50%;background:#63a77b;vertical-align:1px}.scene-path{position:relative;height:205px;margin:4px 0 0}.scene-path svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.path-shadow{fill:none;stroke:#e5ede3;stroke-width:13;stroke-linecap:round}.path-line{fill:none;stroke:#85ad8a;stroke-width:2.2;stroke-dasharray:5 8;stroke-linecap:round;animation:pathTravel 26s linear infinite}.scene-node{position:absolute;z-index:1;width:142px;min-height:91px;padding:13px 13px 10px;background:#fff;border:1px solid #e5ebe3;border-radius:10px;box-shadow:0 7px 16px rgba(50,72,53,.08);animation:nodeFloat 5s ease-in-out infinite}.scene-node b{display:block;margin:7px 0 4px;color:#303d33;font-size:12px;line-height:1.25}.scene-node small{color:#839087;font-size:10px}.node-icon{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#eaf2e9;color:#47765a;font-size:9px;font-weight:800}.node-profile{left:0;top:102px}.node-project{left:40%;top:53px;animation-delay:-1.7s}.node-interview{right:0;top:0;animation-delay:-3.2s}.node-pin{position:absolute;width:7px;height:7px;border-radius:50%;background:#619b6c;box-shadow:0 0 0 4px rgba(97,155,108,.14);right:12px;top:15px}.scene-spark{position:absolute;color:#c69a45;animation:sparkPulse 3.2s ease-in-out infinite}.spark-one{left:30%;top:36px;font-size:19px}.spark-two{right:25%;bottom:16px;font-size:15px;animation-delay:-1.5s}.scene-caption{position:relative;display:flex;align-items:center;gap:11px;border-top:1px solid #e7ece5;padding-top:12px}.caption-mark{display:grid;place-items:center;width:29px;height:29px;background:#eaf2e9;color:#47765a;border-radius:8px;font-weight:700}.scene-caption b,.scene-caption small{display:block}.scene-caption b{font-size:11px;color:#46554a}.scene-caption small{font-size:10px;color:#89938a;margin-top:3px}.caption-arrow{margin-left:auto;color:#5e8766;font-size:17px}.scene-orbit{position:absolute;border:1px solid rgba(108,155,113,.13);border-radius:50%;pointer-events:none}.orbit-one{width:240px;height:240px;right:-150px;bottom:-130px}.orbit-two{width:170px;height:170px;right:-115px;bottom:-95px}
+@keyframes pathTravel{to{stroke-dashoffset:-104}}@keyframes nodeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes sparkPulse{0%,100%{opacity:.45;transform:scale(.9) rotate(0)}50%{opacity:1;transform:scale(1.12) rotate(12deg)}}
+html[data-theme="dark"] .home-hero-split{background:linear-gradient(118deg,#202a23,#222e25 55%,#24342a);border-color:#394b3c}html[data-theme="dark"] .home-hero-split h2 em{color:#9bc49f}html[data-theme="dark"] .home-hero-split .hh-tag{color:#a8c3aa}html[data-theme="dark"] .home-hero-split .hero-footnote{color:#a0aea2}html[data-theme="dark"] .home-hero-split .hero-check{background:#314838;color:#acd0b0}html[data-theme="dark"] .hero-scene{background:linear-gradient(145deg,rgba(38,49,41,.98),rgba(34,48,37,.98));border-color:#405344}html[data-theme="dark"] .scene-topline,html[data-theme="dark"] .scene-caption small{color:#a0ada1}html[data-theme="dark"] .scene-term,html[data-theme="dark"] .scene-caption b,html[data-theme="dark"] .scene-node b{color:#e1e9df}html[data-theme="dark"] .scene-node{background:#2a372d;border-color:#405044}html[data-theme="dark"] .scene-node small{color:#a5b1a5}html[data-theme="dark"] .node-icon,html[data-theme="dark"] .caption-mark{background:#344b39;color:#b2d2b3}html[data-theme="dark"] .scene-caption{border-color:#405044}html[data-theme="dark"] .path-shadow{stroke:#344438}html[data-theme="dark"] .path-line{stroke:#85b58d}html[data-theme="dark"] .scene-orbit{border-color:rgba(156,198,157,.12)}
+@media(max-width:850px){.home-hero-split{grid-template-columns:1fr;gap:26px}.hero-scene{min-height:280px}.home-hero-split h2 br{display:none}}
+@media(max-width:520px){.home-hero-split{padding:24px 19px}.hero-scene{padding:15px 13px 12px;min-height:260px}.scene-path{height:185px}.scene-node{width:118px;min-height:86px;padding:10px}.scene-node b{font-size:11px}.node-project{left:37%;top:48px}.node-profile{top:92px}.node-interview{top:0}.hero-footnote{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.path-line,.scene-node,.scene-spark{animation:none!important}}
+/* Glass finish and a moving marker that travels along the preparation path */
+.home-hero-split{background:linear-gradient(115deg,rgba(255,255,255,.70),rgba(234,243,235,.57) 52%,rgba(216,235,221,.48));backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);border:1px solid rgba(255,255,255,.78);box-shadow:0 22px 65px rgba(48,86,59,.10),inset 0 1px rgba(255,255,255,.9)}
+.home-hero-split:before{width:520px;height:520px;right:-90px;top:-290px;background:radial-gradient(circle,rgba(126,181,139,.30),rgba(193,218,195,.10) 42%,transparent 72%);filter:blur(3px);animation:ambientDrift 13s ease-in-out infinite alternate}.hero-scene{background:linear-gradient(145deg,rgba(255,255,255,.62),rgba(245,250,244,.42));backdrop-filter:blur(16px) saturate(145%);-webkit-backdrop-filter:blur(16px) saturate(145%);border-color:rgba(255,255,255,.88);box-shadow:0 18px 42px rgba(52,82,58,.10),inset 0 1px rgba(255,255,255,.9)}.scene-node{background:rgba(255,255,255,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:rgba(255,255,255,.92);box-shadow:0 10px 24px rgba(50,72,53,.10),inset 0 1px rgba(255,255,255,.9);transition:transform .35s ease,box-shadow .35s ease}.scene-node:hover{transform:translateY(-6px) scale(1.025);box-shadow:0 15px 30px rgba(50,72,53,.16)}.hero-scene:after{content:"";position:absolute;inset:-60% auto -60% -40%;width:30%;transform:rotate(20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);pointer-events:none;animation:glassSweep 10s ease-in-out infinite}.scene-path svg{overflow:visible}.path-line{stroke:#72a47d;stroke-width:2.6;filter:drop-shadow(0 0 3px rgba(80,142,93,.22))}.scene-path .traveller-halo{fill:rgba(73,142,91,.16)}.scene-path .traveller{fill:#3e9560;stroke:white;stroke-width:3;filter:drop-shadow(0 2px 4px rgba(31,93,52,.35))}
+html[data-theme="dark"] .home-hero-split{background:linear-gradient(115deg,rgba(35,48,39,.76),rgba(36,55,41,.66) 52%,rgba(37,63,44,.58));border-color:rgba(183,211,186,.17);box-shadow:0 22px 65px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.08)}html[data-theme="dark"] .home-hero-split:before{background:radial-gradient(circle,rgba(103,165,116,.26),rgba(87,131,94,.08) 42%,transparent 72%)}html[data-theme="dark"] .hero-scene{background:linear-gradient(145deg,rgba(43,58,47,.75),rgba(34,50,38,.58));border-color:rgba(184,212,187,.18);box-shadow:0 18px 42px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.07)}html[data-theme="dark"] .scene-node{background:rgba(46,63,50,.72);border-color:rgba(193,216,195,.18);box-shadow:0 10px 24px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.06)}html[data-theme="dark"] .hero-scene:after{background:linear-gradient(90deg,transparent,rgba(220,244,222,.07),transparent)}
+@keyframes ambientDrift{from{transform:translate3d(-18px,4px,0) scale(.94)}to{transform:translate3d(16px,18px,0) scale(1.08)}}@keyframes glassSweep{0%,58%{left:-40%;opacity:0}68%{opacity:1}90%,100%{left:130%;opacity:0}}
+@media(prefers-reduced-motion:reduce){.home-hero-split:before,.hero-scene:after{animation:none!important}.scene-node{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP NAV ===================== -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="logo"><span class="accent">Run</span>way</div>
+    <div class="tabs" id="tabBar">
+      <button class="tab-btn active" data-page="home">Home</button>
+      <button class="tab-btn" data-page="dashboard">Dashboard</button>
+      <button class="tab-btn" data-page="resume">Resume</button>
+      <button class="tab-btn" data-page="companies">Companies</button>
+      <button class="tab-btn" data-page="skills">Skills</button>
+      <button class="tab-btn" data-page="interview">Interview</button>
+      <button class="tab-btn" data-page="roadmap">Roadmap</button>
+      <button class="tab-btn" data-page="analytics">Analytics</button>
+      <button class="tab-btn" data-page="mllab">ML Lab</button>
+      <button class="tab-btn" data-page="jobs">Jobs</button>
+      <button class="tab-btn" data-page="tests">Tests</button>
+      <button class="tab-btn" data-page="portfolio">Portfolio</button>
+      <button class="tab-btn" data-page="tpo">TPO</button>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" id="themeToggleBtn" title="Toggle dark mode">
+        <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      </button>
+      <button class="icon-btn" id="syncBtn" title="Cloud sync">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+        <span class="badge-dot" id="syncDot" style="background:#8A87A0;"></span>
+      </button>
+      <button class="icon-btn" id="notifBtn" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge-dot" id="notifCount">0</span>
+      </button>
+      <button class="btn primary" id="reportBtn" style="padding:8px 14px;font-size:12.5px;">Export report</button>
+    </div>
+  </div>
+  <div class="notif-panel" id="notifPanel">
+    <div class="np-head">Updates</div>
+    <div id="notifList"></div>
+  </div>
+  <div class="notif-panel" id="syncPanel" style="right:70px;width:290px;">
+    <div class="np-head">Cloud sync (Flask backend)</div>
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+      <label style="font-size:11px;color:var(--muted);">Backend URL
+        <input type="text" id="backendUrl" value="http://localhost:5000" style="width:100%;margin-top:4px;padding:7px 9px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;">
+      </label>
+      <label style="font-size:11px;color:var(--muted);">Roll number
+        <input type="text" id="rollNumber" placeholder="e.g. CS101" style="width:100%;margin-top:4px;padding:7px 9px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;">
+      </label>
+      <label style="font-size:11px;color:var(--muted);">Password <span style="opacity:.7">(new roll number = creates account)</span>
+        <input type="password" id="passwordInput" placeholder="min 4 characters" style="width:100%;margin-top:4px;padding:7px 9px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;">
+      </label>
+      <label style="font-size:11px;color:var(--muted);">Your name <span style="opacity:.7">(for certificates/portfolio)</span>
+        <input type="text" id="studentName" placeholder="e.g. Asha Verma" style="width:100%;margin-top:4px;padding:7px 9px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;">
+      </label>
+      <button class="btn primary" id="connectBtn" style="width:100%;">Log in / create account</button>
+      <button class="btn" id="saveBtn" style="width:100%;">Save now</button>
+      <p id="syncStatus" style="font-size:11.5px;color:var(--muted);margin:0;">Not connected â€” running in browser-only mode.</p>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ===================== PERSISTENT AI INSIGHT STRIP ===================== -->
+<div class="insight-strip">
+  <div class="insight-strip-inner">
+    <span class="tag">Next step</span>
+    <span id="stripText">Building your profileâ€¦</span>
+    <a href="#" class="go" data-goto="dashboard">Open Dashboard â†’</a>
+  </div>
+</div>
+
+<!-- ===================== HOME ===================== -->
+<section class="page active" data-page="home" id="page-home">
+  <div class="home-hero home-hero-split">
+    <div class="hero-copy">
+      <div class="hh-tag"><span class="live-dot"></span> YOUR PLACEMENT PREP, IN ONE PLACE</div>
+      <h2>Build your way to a<br><em>placement-ready</em> profile.</h2>
+      <p id="homeInsight">Add your profile details to get a clear view of what to work on next.</p>
+      <div class="hh-score"><div class="n" id="homeScore">50%</div><div class="l">readiness estimate <span class="score-separator">·</span> <span id="homeStatus">Developing</span></div></div>
+      <button class="btn" id="downloadCardBtn" style="margin-top:18px;">↓ &nbsp;Download my readiness card</button>
+      <div class="hero-footnote"><span class="hero-check">✓</span> A practical guide for your third-year placement prep</div>
+    </div>
+    <div class="hero-scene" aria-label="Illustration of a student placement preparation journey">
+      <div class="scene-topline"><span>YOUR NEXT CHAPTER</span><span class="scene-term">3rd year <i></i></span></div>
+      <div class="scene-path" aria-hidden="true"><svg viewBox="0 0 600 230" preserveAspectRatio="none"><path class="path-shadow" d="M34 182 C120 182 105 82 210 93 S310 190 385 132 S470 38 568 52"/><path id="journeyPath" class="path-line" d="M34 182 C120 182 105 82 210 93 S310 190 385 132 S470 38 568 52"/><circle class="traveller-halo" r="11"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto"><mpath href="#journeyPath"/></animateMotion></circle><circle class="traveller" r="5"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto"><mpath href="#journeyPath"/></animateMotion></circle></svg>
+        <div class="scene-node node-profile"><span class="node-icon">01</span><b>Know your<br>starting point</b><small>Profile & skills</small><span class="node-pin"></span></div>
+        <div class="scene-node node-project"><span class="node-icon">02</span><b>Build something<br>you can show</b><small>Projects & practice</small><span class="node-pin"></span></div>
+        <div class="scene-node node-interview"><span class="node-icon">03</span><b>Get ready to<br>tell your story</b><small>Resume & interviews</small><span class="node-pin"></span></div>
+        <div class="scene-spark spark-one">✳</div><div class="scene-spark spark-two">✦</div>
+      </div>
+      <div class="scene-caption"><span class="caption-mark">↗</span><span><b>Small steps. Real progress.</b><small>Pick one thing to work on this week.</small></span><span class="caption-arrow">→</span></div>
+      <div class="scene-orbit orbit-one"></div><div class="scene-orbit orbit-two"></div>
+    </div>
+  </div>
+
+  <section class="prep-journey" aria-label="Placement preparation steps">
+    <div class="journey-heading"><div><p class="eyebrow">A simple path through the semester</p><h3>Placement prep, one step at a time</h3></div><span class="sub">Scroll to explore</span></div>
+    <div class="journey-row">
+      <a class="journey-card" href="#" data-goto="resume"><span class="journey-step">01</span><strong>Check your resume</strong><span>Review keywords and missing skills.</span><b>Open resume →</b></a>
+      <a class="journey-card" href="#" data-goto="skills"><span class="journey-step">02</span><strong>Choose a skill to build</strong><span>See gaps for your suggested role.</span><b>View skills →</b></a>
+      <a class="journey-card" href="#" data-goto="roadmap"><span class="journey-step">03</span><strong>Plan the next weeks</strong><span>Turn one gap into a practical task.</span><b>Open roadmap →</b></a>
+      <a class="journey-card" href="#" data-goto="interview"><span class="journey-step">04</span><strong>Practise explaining</strong><span>Try a role-related interview question.</span><b>Start practice →</b></a>
+      <a class="journey-card" href="#" data-goto="jobs"><span class="journey-step">05</span><strong>Track applications</strong><span>Keep your applications in one place.</span><b>Open tracker →</b></a>
+    </div>
+  </section>
+
+  <div class="grid-3" style="margin-top:18px;">
+    <div class="card"><h3 id="homeCareer">â€”</h3><p class="sub">Role that fits your current skills</p></div>
+    <div class="card"><h3 id="homeWeak">â€”</h3><p class="sub">Area to work on next</p></div>
+    <div class="card"><h3 id="homeCompany">â€”</h3><p class="sub">Illustrative recruiter benchmark</p></div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <h3>Personalized recommendations</h3>
+    <p class="sub">Small, specific steps based on the profile you entered</p>
+    <div id="homeRecs" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+
+  <div class="card prep-card" style="margin-top:18px;">
+    <p class="eyebrow">Third-year weekly checklist</p>
+    <h3>Small steps that add up</h3>
+    <p class="sub">Keep it realistic. Tick items off as you go; your list stays on this device.</p>
+    <div class="prep-list">
+      <label><input class="prep-check" type="checkbox" value="role"> Pick one role to focus on this month</label>
+      <label><input class="prep-check" type="checkbox" value="project"> Make progress on one project you can demo</label>
+      <label><input class="prep-check" type="checkbox" value="practice"> Do a few aptitude or coding questions this week</label>
+      <label><input class="prep-check" type="checkbox" value="interview"> Practise explaining one project out loud</label>
+    </div>
+    <p id="prepProgress" class="sub" aria-live="polite" style="margin:12px 0 0;">0 of 4 done</p>
+    <button class="btn" data-goto="roadmap" style="margin-top:12px;">Open my improvement plan</button>
+  </div>
+</section>
+
+<!-- ===================== DASHBOARD ===================== -->
+<section class="page" data-page="dashboard" id="page-dashboard">
+  <div class="page-head">
+    <p class="eyebrow">Dashboard Â· profile & readiness</p>
+    <h2>Your preparation snapshot</h2>
+    <p>Update your details to see how your preparation profile changes. The readiness estimate is a practice guide, not a hiring prediction.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Student profile</h3>
+      <p class="sub">Adjust any field â€” every tab updates instantly</p>
+
+      <fieldset>
+        <legend>Academics</legend>
+        <div class="field">
+          <label>Current CGPA <span class="val" id="v_cgpa">7.5</span></label>
+          <input type="range" id="cgpa" min="4" max="10" step="0.1" value="7.5">
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>10th %</label>
+            <input type="number" id="tenth" min="35" max="100" value="82">
+            <div class="upload-row"><label class="upload-btn" id="tenthUploadBtn">Attach 10th certificate<input type="file" id="tenthCert" accept=".pdf,image/*"></label></div>
+            <div class="file-chip" id="tenthChip"><span class="name"></span><span class="rm" title="Remove">âœ•</span></div>
+            <div class="extract-hint" id="tenthHint"></div>
+          </div>
+          <div class="field">
+            <label>12th %</label>
+            <input type="number" id="twelfth" min="35" max="100" value="78">
+            <div class="upload-row"><label class="upload-btn" id="twelfthUploadBtn">Attach 12th certificate<input type="file" id="twelfthCert" accept=".pdf,image/*"></label></div>
+            <div class="file-chip" id="twelfthChip"><span class="name"></span><span class="rm" title="Remove">âœ•</span></div>
+            <div class="extract-hint" id="twelfthHint"></div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Aptitude &amp; skills</legend>
+        <div class="field"><label>Aptitude test score <span class="val" id="v_apt">62</span></label><input type="range" id="aptitude" min="0" max="100" value="62"></div>
+        <div class="field"><label>Communication skill <span class="val" id="v_comm">6</span>/10</label><input type="range" id="communication" min="1" max="10" value="6"></div>
+        <div class="field"><label>Programming skill <span class="val" id="v_prog">6</span>/10</label><input type="range" id="programming" min="1" max="10" value="6"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Experience</legend>
+        <div class="two-col">
+          <div class="field"><label>Projects</label><input type="number" id="projects" min="0" max="15" value="2"></div>
+          <div class="field"><label>Internships</label><input type="number" id="internships" min="0" max="6" value="0"></div>
+        </div>
+        <div class="field">
+          <label>Certifications</label>
+          <input type="number" id="certifications" min="0" max="10" value="1">
+          <div class="upload-row"><label class="upload-btn" id="certUploadBtn">Attach certificate file(s)<input type="file" id="certFiles" accept=".pdf,image/*" multiple></label></div>
+          <div class="cert-file-list" id="certFileList"></div>
+          <div class="extract-hint">Attaching files here auto-updates the count above.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Eligibility details</legend>
+        <div class="field"><label>Active backlogs</label><input type="number" id="backlogs" min="0" max="10" value="0"></div>
+      </fieldset>
+
+      <button class="btn" id="sampleBtn" style="width:100%;">Load sample student</button>
+    </div>
+
+    <div>
+      <div class="hero-runway">
+        <div class="hero-top">
+          <div>
+            <p class="hero-label">Readiness estimate</p>
+            <div class="hero-number"><span id="probNum">50</span><span class="pct">%</span></div>
+            <div class="hero-status" id="statusLabel" style="color:var(--indigo);">Developing</div>
+            <p class="hero-desc" id="statusDesc">A solid foundation â€” a few targeted improvements will move this meaningfully.</p>
+          </div>
+          <span class="pill indigo" id="engineLabel">Profile score: rule-based</span>
+        </div>
+        <svg class="runway-svg" id="runwaySvg" viewBox="0 0 900 150"></svg>
+      </div>
+
+      <div class="card" style="margin-top:18px;" id="mlCard">
+        <h3>Trained ML model</h3>
+        <p class="sub">A scikit-learn model trained on the dataset shown in ML Lab. Current demo data is synthetic; its score does not predict real placement outcomes.</p>
+        <div id="mlBody" style="font-size:13px;line-height:1.6;">Backend not checked yet.</div>
+        <button class="btn" id="mlRunBtn" style="margin-top:12px;">Run trained model on this profile</button>
+        <a href="#" data-goto="mllab" style="margin-left:12px;font-size:12.5px;font-weight:700;">Open ML Lab &rarr;</a>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <h3>Next suggested action</h3>
+        <p class="sub">The single highest-impact thing to do right now</p>
+        <div id="nextAction" class="rec-item" style="margin:0;"></div>
+      </div>
+
+      <div class="card">
+        <h3>"What-if" simulator</h3>
+        <p class="sub">Preview your probability with different numbers â€” nothing here is saved until you click Apply</p>
+        <div class="field">
+          <label>Programming <span class="val" id="sim_v_prog">6</span>/10</label>
+          <input type="range" id="sim_programming" min="1" max="10" value="6">
+        </div>
+        <div class="field">
+          <label>Aptitude <span class="val" id="sim_v_apt">62</span></label>
+          <input type="range" id="sim_aptitude" min="0" max="100" value="62">
+        </div>
+        <div class="two-col">
+          <div class="field"><label>Projects</label><input type="number" id="sim_projects" min="0" max="15" value="2"></div>
+          <div class="field"><label>Certifications</label><input type="number" id="sim_certifications" min="0" max="10" value="1"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:6px;padding:14px;border-radius:10px;background:var(--indigo-bg);">
+          <div><span style="font-size:11px;color:var(--muted);display:block;">Current</span><span class="mono" style="font-size:20px;font-weight:800;color:var(--ink);" id="sim_current">50%</span></div>
+          <span style="color:var(--muted);">â†’</span>
+          <div><span style="font-size:11px;color:var(--muted);display:block;">If applied</span><span class="mono" style="font-size:20px;font-weight:800;color:var(--indigo);" id="sim_preview">50%</span></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button class="btn" id="simResetBtn" style="flex:1;">Reset to current</button>
+          <button class="btn primary" id="simApplyBtn" style="flex:1;">Apply these changes</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Profile balance</h3>
+        <p class="sub">Academic, technical, aptitude and experience scores</p>
+        <div class="chart-box"><canvas id="radarChart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <h3>Auto-highlighted weak areas</h3>
+        <p class="sub">Skill gap vs. a typically-placed student benchmark</p>
+        <div id="gapRows"></div>
+        <div class="strengths-weak" style="margin-top:14px;">
+          <div class="sw-col str"><h4>Strengths</h4><ul id="strengthsList"></ul></div>
+          <div class="sw-col weak"><h4>Needs attention</h4><ul id="weaknessList"></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RESUME ===================== -->
+<section class="page" data-page="resume" id="page-resume">
+  <div class="page-head">
+    <p class="eyebrow">Resume Â· AI scan</p>
+    <h2>Resume analysis &amp; ATS score</h2>
+    <p>Upload a PDF or paste text â€” the Profile guide scans it for skills, estimates an ATS score, flags what's missing for your top career match, and automatically syncs your skill counts to the Dashboard's skill-gap analysis.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Upload / paste resume</h3>
+      <p class="sub">Nothing leaves your browser â€” parsing happens locally</p>
+      <div class="upload-row"><label class="upload-btn" id="resumeUploadBtn">Upload resume PDF<input type="file" id="resumePdf" accept="application/pdf"></label></div>
+      <div class="file-chip" id="resumeChip"><span class="name"></span><span class="rm" title="Remove">âœ•</span></div>
+      <p class="extract-hint" id="resumePdfStatus"></p>
+      <p class="extract-hint" style="margin:10px 0 4px;">â€” or paste text below â€”</p>
+      <textarea id="resumeText" placeholder="Paste resume text hereâ€¦"></textarea>
+      <button class="btn primary" id="scanBtn" style="margin-top:10px;width:100%;">Run AI scan</button>
+      <div class="detected" id="detectedBox"></div>
+    </div>
+
+    <div class="card">
+      <h3>ATS score</h3>
+      <p class="sub">Heuristic estimate of how an Applicant Tracking System would read this resume</p>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
+        <div class="hero-number" style="font-size:44px;"><span id="atsScore">â€”</span><span class="pct" style="font-size:20px;">/100</span></div>
+      </div>
+      <div id="atsBreakdown" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Missing skills for your top career match</h3>
+    <p class="sub" id="missingSkillsRoleLabel">Run a scan to see this</p>
+    <div id="missingSkillsList" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>AI suggestions to improve this resume</h3>
+    <ul class="rec-list" id="resumeSuggestions"></ul>
+  </div>
+</section>
+
+<!-- ===================== COMPANIES ===================== -->
+<section class="page" data-page="companies" id="page-companies">
+  <div class="page-head">
+    <p class="eyebrow">Companies Â· readiness scoring</p>
+    <h2>Company-tier readiness</h2>
+    <p>Compare your profile with illustrative recruiter tiers, see the gaps, and choose what to work on next.</p>
+  </div>
+  <p class="elig-note">Illustrative benchmark tiers for practice â€” not the official criteria of any specific company. Always confirm exact cutoffs from your placement cell's latest notification.</p>
+  <div id="companyRows"></div>
+</section>
+
+<!-- ===================== SKILLS ===================== -->
+<section class="page" data-page="skills" id="page-skills">
+  <div class="page-head">
+    <p class="eyebrow">Skills Â· gap analysis</p>
+    <h2>Skill gaps &amp; learning path</h2>
+    <p>Ranked by expected impact on your placement odds, with concrete courses and projects for each gap.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Career path recommender</h3>
+      <p class="sub">Which roles best match your current profile</p>
+      <div id="roleRows"></div>
+    </div>
+    <div class="card">
+      <h3>Skill gap vs. benchmark</h3>
+      <p class="sub">Grey tick marks the typical bar for placed students</p>
+      <div id="gapRowsSkills"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Recommended courses, certifications &amp; projects</h3>
+    <p class="sub">Mapped directly to your weakest areas</p>
+    <div id="courseList"></div>
+  </div>
+</section>
+
+<!-- ===================== INTERVIEW ===================== -->
+<section class="page" data-page="interview" id="page-interview">
+  <div class="page-head">
+    <p class="eyebrow">Interview Â· AI practice</p>
+    <h2>Mock interview practice</h2>
+    <p>Questions are generated based on your top career match. Answers are scored with a simple heuristic (keyword coverage, structure, length) â€” not a full language model, so treat feedback as a practice nudge, not a verdict.</p>
+  </div>
+  <div class="card">
+    <div class="q-card">
+      <div class="q-tag" id="qTag">Behavioral</div>
+      <p id="qText">Click "New question" to begin.</p>
+    </div>
+    <div style="display:flex;gap:10px;margin:10px 0;">
+      <button class="btn" id="speakQBtn" title="Read the question aloud">ðŸ”Š Read question aloud</button>
+      <button class="btn" id="voiceAnswerBtn" title="Speak your answer instead of typing">ðŸŽ¤ Speak your answer</button>
+    </div>
+    <p class="extract-hint" id="voiceSupportNote" style="display:none;"></p>
+    <textarea id="answerText" placeholder="Type your answer hereâ€¦ or use the mic button above"></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button class="btn primary" id="getFeedbackBtn">Get AI feedback</button>
+      <button class="btn" id="newQBtn">New question</button>
+    </div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="fb-score"><span id="fbScore">0</span>/10</div>
+      <ul id="fbList"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROADMAP ===================== -->
+<section class="page" data-page="roadmap" id="page-roadmap">
+  <div class="page-head">
+    <p class="eyebrow">Roadmap Â· dynamic plan</p>
+    <h2>Your monthly improvement roadmap</h2>
+    <p>Regenerated automatically from your current weak spots every time your profile changes.</p>
+  </div>
+  <div class="grid-3" id="roadmapGrid"></div>
+</section>
+
+<!-- ===================== ANALYTICS ===================== -->
+<section class="page" data-page="analytics" id="page-analytics">
+  <div class="page-head">
+    <p class="eyebrow">Analytics Â· trends</p>
+    <h2>Readiness estimate over time</h2>
+    <p>Log your score over time to track your own progress. The reference benchmark is illustrative, not a live college placement statistic.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Trend</h3>
+      <p class="sub">Saved on this device only</p>
+      <div class="chart-box"><canvas id="trendChart"></canvas></div>
+      <button class="btn primary" id="logSnapBtn" style="margin-top:14px;width:100%;">Log today's snapshot</button>
+    </div>
+    <div class="card">
+      <h3>Snapshot history</h3>
+      <div id="snapList"><p class="sub">No snapshots logged yet.</p></div>
+      <button class="btn" id="clearSnapBtn" style="width:100%;margin-top:10px;">Clear history</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Category benchmark comparison</h3>
+    <p class="sub">Your scores vs. a typically-placed student</p>
+    <div id="benchCompare"></div>
+  </div>
+  <div class="card">
+    <h3>Peer comparison</h3>
+    <p class="sub">Anonymous â€” only the count, average and your rank are shown, never another student's data</p>
+    <div id="peerBox"><p class="sub">Connect to the backend (cloud icon, top right) and click Save now to see how you compare.</p></div>
+    <button class="btn" id="refreshPeerBtn" style="margin-top:10px;width:100%;">Refresh peer stats</button>
+  </div>
+</section>
+
+<!-- ===================== JOBS + JD MATCHER + TRACKER ===================== -->
+<section class="page" data-page="mllab" id="page-mllab">
+  <div class="page-head">
+    <p class="eyebrow">ML Lab Â· model training &amp; evaluation</p>
+    <h2>How the prediction model was built</h2>
+    <p>Explore the training workflow: dataset, train-test split, cross-validation, model comparison, and held-out test metrics.</p>
+  </div>
+  <div class="card" style="margin-bottom:18px;">
+    <h3>Run the training pipeline</h3>
+    <p class="sub">This trains from <code>ml/placement_data.csv</code> and refreshes the saved model and charts. Dashboard inputs are for prediction only. The current dataset is synthetic.</p>
+    <button class="btn primary" id="mlTrainBtn">Train model now</button>
+    <pre id="mlTrainLog" style="white-space:pre-wrap;max-height:220px;overflow:auto;background:var(--card-2);border:1px solid var(--border);border-radius:8px;padding:12px;font:12px/1.5 'JetBrains Mono',monospace;color:var(--body);">Training has not been started from this page.</pre>
+  </div>
+  <div class="card" id="mlLabStatus"><p class="sub" style="margin:0;">Loading model information from the backend&hellip;</p></div>
+  <div id="mlLabBody" style="display:none;">
+    <div class="card" style="margin-top:18px;">
+      <h3>Best model: <span id="mlBestName"></span></h3>
+      <p class="sub" id="mlBestParams"></p>
+      <div class="ml-metrics" id="mlMetricCards"></div>
+    </div>
+    <div class="card" style="margin-top:18px;">
+      <h3>Algorithm comparison (test set)</h3>
+      <p class="sub">Best model is chosen with 5-fold cross-validation on the training data only; the test set is used once at the end.</p>
+      <div style="overflow-x:auto;"><table class="ml-table" id="mlCompare"></table></div>
+    </div>
+    <div class="grid-2" style="margin-top:18px;">
+      <div class="card"><h3>Confusion matrix</h3><p class="sub">Actual vs predicted on the test set</p><img class="ml-img" id="imgCM" alt="Confusion matrix"></div>
+      <div class="card"><h3>ROC curves</h3><p class="sub">Higher and further left is better</p><img class="ml-img" id="imgROC" alt="ROC curves"></div>
+      <div class="card"><h3>Feature importance</h3><p class="sub">Drop in F1 when a feature is shuffled</p><img class="ml-img" id="imgFI" alt="Feature importance"></div>
+      <div class="card"><h3>Correlation matrix</h3><p class="sub">From the exploratory data analysis</p><img class="ml-img" id="imgCorr" alt="Correlation matrix"></div>
+    </div>
+    <div class="card" style="margin-top:18px;" id="mlSalaryCard"></div>
+    <div class="card" style="margin-top:18px;">
+      <h3>Try the model on your profile</h3>
+      <p class="sub">Uses the values currently entered on the Dashboard. The bars show how much each factor raises or lowers the probability compared with a typical student in the training data.</p>
+      <button class="btn primary" id="mlLabRun">Predict with trained model</button>
+      <div id="mlLabResult" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-page="jobs" id="page-jobs">
+  <div class="page-head">
+    <p class="eyebrow">Jobs Â· JD matcher Â· tracker</p>
+    <h2>Jobs &amp; applications</h2>
+    <p>Paste any job description to see how well you match it, browse postings from your placement cell, and track every application on one board.</p>
+  </div>
+
+  <div class="card">
+    <h3>JD matcher</h3>
+    <p class="sub">Keyword match between a job description and your scanned resume (Resume tab)</p>
+    <textarea id="jdText" placeholder="Paste a job description hereâ€¦" style="min-height:110px;"></textarea>
+    <button class="btn primary" id="analyzeJdBtn" style="margin-top:10px;width:100%;">Analyze match</button>
+    <div id="jdResult" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Open positions</h3>
+    <p class="sub">Posted by your placement cell (TPO tab) â€” empty until your TPO adds one</p>
+    <div id="jobList"><p class="sub">No postings yet.</p></div>
+  </div>
+
+  <div class="card">
+    <h3>Application tracker</h3>
+    <p class="sub">Drag isn't wired up â€” use the arrows on each card to move it along</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <input type="text" id="trackCompany" placeholder="Company" style="flex:1;min-width:120px;background:#FAFAFE;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;">
+      <input type="text" id="trackRole" placeholder="Role (optional)" style="flex:1;min-width:120px;background:#FAFAFE;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;">
+      <button class="btn primary" id="addAppBtn">Add</button>
+    </div>
+    <div class="kanban" id="kanbanBoard"></div>
+  </div>
+</section>
+
+<!-- ===================== TESTS ===================== -->
+<section class="page" data-page="tests" id="page-tests">
+  <div class="page-head">
+    <p class="eyebrow">Tests Â· timed assessment</p>
+    <h2>Timed aptitude test</h2>
+    <p>A quick, timed test instead of self-rating â€” your score can replace the aptitude number on your Dashboard.</p>
+  </div>
+  <div class="card">
+    <div id="quizIntro">
+      <p class="sub">10 questions, 5 minutes total. Your score updates your Aptitude field when you finish.</p>
+      <button class="btn primary" id="startQuizBtn">Start test</button>
+    </div>
+    <div id="quizArea" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span class="sub" id="quizProgress">Question 1 of 10</span>
+        <span class="quiz-timer" id="quizTimer">5:00</span>
+      </div>
+      <div id="quizQuestion"></div>
+      <button class="btn primary" id="quizNextBtn" style="width:100%;margin-top:10px;">Next</button>
+    </div>
+    <div id="quizResult" style="display:none;"></div>
+  </div>
+</section>
+
+<!-- ===================== PORTFOLIO ===================== -->
+<section class="page" data-page="portfolio" id="page-portfolio">
+  <div class="page-head">
+    <p class="eyebrow">Portfolio Â· project builder</p>
+    <h2>Project portfolio</h2>
+    <p>List the projects you'd actually talk about in an interview â€” saved to your account when the backend is connected.</p>
+  </div>
+  <div class="card">
+    <h3>Add a project</h3>
+    <div class="two-col">
+      <div class="field"><label>Title</label><input type="text" id="pfTitle" placeholder="e.g. Placement Readiness App"></div>
+      <div class="field"><label>Link (optional)</label><input type="text" id="pfLink" placeholder="https://github.com/â€¦"></div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="pfDesc" placeholder="What it does, your role, tech usedâ€¦" style="min-height:70px;"></textarea></div>
+    <button class="btn primary" id="addPortfolioBtn" style="width:100%;">Add project</button>
+  </div>
+  <div class="card">
+    <h3>Your projects</h3>
+    <div id="portfolioList"><p class="sub">No projects added yet.</p></div>
+  </div>
+</section>
+
+<!-- ===================== TPO CONSOLE ===================== -->
+<section class="page" data-page="tpo" id="page-tpo">
+  <div class="page-head">
+    <p class="eyebrow">TPO Â· placement cell console</p>
+    <h2>Cohort overview</h2>
+    <p>For placement-cell staff â€” protected by a separate admin password, not a student login.</p>
+  </div>
+  <div class="card" id="tpoLoginCard">
+    <div class="two-col">
+      <div class="field"><label>Backend URL</label><input type="text" id="tpoBackendUrl" value="http://localhost:5000"></div>
+      <div class="field"><label>Admin password</label><input type="password" id="tpoPassword" placeholder="default: admin123"></div>
+    </div>
+    <button class="btn primary" id="tpoUnlockBtn" style="width:100%;">Unlock TPO console</button>
+    <p class="sub" id="tpoStatus" style="margin-top:8px;"></p>
+  </div>
+  <div id="tpoContent" style="display:none;">
+    <div class="card">
+      <h3>Cohort</h3>
+      <div style="overflow-x:auto;"><table class="tpo-table" id="tpoTable"></table></div>
+    </div>
+    <div class="card">
+      <h3>Post a job</h3>
+      <div class="two-col">
+        <div class="field"><label>Company</label><input type="text" id="tpoJobCompany"></div>
+        <div class="field"><label>Role</label><input type="text" id="tpoJobRole"></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="tpoJobDesc" style="min-height:70px;"></textarea></div>
+      <button class="btn primary" id="tpoPostJobBtn" style="width:100%;">Post job</button>
+    </div>
+    <div class="card">
+      <h3>Posted jobs</h3>
+      <div id="tpoJobList"><p class="sub">No postings yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <div class="footer-brand"><span class="accent">Run</span>way</div>
+      <p class="footer-about">Runway is a student project for organising placement preparation: profile review, resume checks, skill practice, application tracking, and a personal improvement plan â€” all in one place, running entirely in your browser.</p>
+
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <button class="linklike" data-goto="home">Home</button>
+      <button class="linklike" data-goto="dashboard">Dashboard</button>
+      <button class="linklike" data-goto="resume">Resume</button>
+      <button class="linklike" data-goto="companies">Companies</button>
+      <button class="linklike" data-goto="skills">Skills</button>
+      <button class="linklike" data-goto="interview">Interview</button>
+      <button class="linklike" data-goto="roadmap">Roadmap</button>
+      <button class="linklike" data-goto="analytics">Analytics</button>
+    </div>
+
+  </div>
+  <div class="footer-bottom">
+    <span>Â© 2026 Runway. Built as a student placement-readiness project â€” a demo, not a registered company.</span>
+    <span>Readiness uses a local heuristic; the optional trained model uses the dataset described in ML Lab.</span>
+  </div>
+</footer>
+
+<!-- ===================== CHATBOT ===================== -->
+<button class="chat-fab" id="chatFab" title="AI Career Assistant">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head"><div class="chat-head-copy"><b>Placement Prep Assistant</b><span class="chat-status" id="chatHeadSub">Profile-aware guidance · local demo mode</span></div><button class="chat-close" id="chatClose" type="button" aria-label="Close chat">×</button></div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-suggest" id="chatSuggest"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" maxlength="300" placeholder="Ask about your placement prep…" aria-label="Message the placement assistant">
+    <button id="chatSendBtn" aria-label="Send message">Send</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const origWarn = console.warn.bind(console);
+  console.warn = function(...args){
+    if(args.some(a => typeof a === 'string' && a.toLowerCase().includes('fake worker'))) return;
+    origWarn(...args);
+  };
+})();
+
+/* ============================================================
+   AI ENGINE â€” the single source of truth every page reads from.
+   Student Data â†’ Profile guide â†’ Prediction / Resume / Skill Gap /
+   Career Guidance / Company Readiness / Roadmap / Chatbot
+   ============================================================ */
+const WEIGHTS = {
+  cgpa:0.16, tenth:0.05, twelfth:0.05, aptitude:0.14,
+  communication:0.10, programming:0.20,
+  projects:0.12, internships:0.10, certifications:0.08
+};
+const BENCH = { cgpa:7.5, aptitude:70, communication:7, programming:7, projects:3, internships:1, certifications:2 };
+
+const ROLES = [
+  {name:'Software Development Engineer (SDE)', weights:{programming:0.45, projects:0.25, aptitude:0.15, communication:0.05, cgpa:0.10}},
+  {name:'Data Analyst / Data Science', weights:{programming:0.30, aptitude:0.30, cgpa:0.15, certifications:0.15, communication:0.10}},
+  {name:'QA / Test Engineer', weights:{programming:0.20, communication:0.25, aptitude:0.25, cgpa:0.15, projects:0.15}},
+  {name:'IT Support / Systems Engineer', weights:{communication:0.35, aptitude:0.25, cgpa:0.20, programming:0.10, certifications:0.10}},
+  {name:'Core / Non-IT Engineering', weights:{cgpa:0.45, aptitude:0.30, communication:0.15, programming:0.10}}
+];
+
+const COMPANY_TIERS = [
+  {name:'Tier 1 â€” Product / dream companies', minCgpa:7.5, minTenth:70, minTwelfth:70, maxBacklogs:0, minProgramming:7, minAptitude:70},
+  {name:'Tier 2 â€” Mass IT recruiters', minCgpa:6.0, minTenth:60, minTwelfth:60, maxBacklogs:0},
+  {name:'Tier 3 â€” Core / service companies', minCgpa:6.0, minTenth:55, minTwelfth:55, maxBacklogs:1},
+  {name:'PSU / Government (GATE route)', minCgpa:6.5, minTenth:60, minTwelfth:60, maxBacklogs:0}
+];
+
+const REC_RULES = {
+  programming:{title:'Sharpen core programming & DSA', desc:'Solve problems daily on LeetCode or GeeksforGeeks â€” this is the single highest-weighted factor in the model.'},
+  aptitude:{title:'Practice aptitude questions', desc:'Dedicate 30 minutes a day to quantitative and logical reasoning â€” most placement drives start with an aptitude round.'},
+  projects:{title:'Build one substantial project', desc:'Ship a full-stack app or a small end-to-end ML project you can explain confidently in interviews.'},
+  internships:{title:'Take on an internship', desc:'Even a short remote internship signals real-world exposure that recruiters weigh heavily.'},
+  certifications:{title:'Earn a relevant certification', desc:'A cloud certification (AWS/Azure/GCP) or one tied to your core interest strengthens your resume quickly.'},
+  communication:{title:'Practice mock interviews & GDs', desc:'Regular mock interviews and group discussions build the fluency recruiters look for.'},
+  cgpa:{title:'Raise your CGPA where possible', desc:"Many companies still apply an academic cutoff â€” prioritise this semester's grades."}
+};
+const NAME_MAP = {cgpa:'CGPA', aptitude:'Aptitude score', communication:'Communication skill', programming:'Programming skill',
+  projects:'Project count', internships:'Internship experience', certifications:'Certifications'};
+
+const ROLE_SKILLS = {
+  'Software Development Engineer (SDE)': ['data structures','algorithms','git','sql','java','python','system design'],
+  'Data Analyst / Data Science': ['sql','python','pandas','numpy','machine learning','excel','tableau'],
+  'QA / Test Engineer': ['testing','selenium','sql','git','api testing'],
+  'IT Support / Systems Engineer': ['networking','linux','sql','cloud','troubleshooting'],
+  'Core / Non-IT Engineering': ['cad','matlab','core fundamentals']
+};
+
+const QUESTION_BANK = {
+  'Software Development Engineer (SDE)': [
+    {tag:'Technical', text:'Explain the difference between an array and a linked list, and when you would use each.'},
+    {tag:'Technical', text:'Walk me through how you would reverse a linked list.'},
+    {tag:'Behavioral', text:'Tell me about a bug you struggled with and how you eventually fixed it.'}
+  ],
+  'Data Analyst / Data Science': [
+    {tag:'Technical', text:'How would you handle missing values in a dataset before analysis?'},
+    {tag:'Technical', text:'Explain the difference between supervised and unsupervised learning.'},
+    {tag:'Behavioral', text:'Describe a project where your analysis changed a decision.'}
+  ],
+  'QA / Test Engineer': [
+    {tag:'Technical', text:'What is the difference between black-box and white-box testing?'},
+    {tag:'Behavioral', text:'Tell me about a time you found a critical bug just before release.'}
+  ],
+  'IT Support / Systems Engineer': [
+    {tag:'Technical', text:"How would you troubleshoot a laptop that won't connect to Wi-Fi?"},
+    {tag:'Behavioral', text:'Describe how you handle a frustrated user on a support call.'}
+  ],
+  'Core / Non-IT Engineering': [
+    {tag:'Technical', text:'Explain a core concept from your branch that you find most interesting.'},
+    {tag:'Behavioral', text:'Tell me about a team project and your specific contribution.'}
+  ],
+  general: [
+    {tag:'Behavioral', text:'Tell me about yourself.'},
+    {tag:'Behavioral', text:'Why should we hire you over other candidates?'},
+    {tag:'Behavioral', text:'Describe a challenge you faced and how you overcame it.'}
+  ]
+};
+
+const ACTION_MAP = {
+  'CGPA': REC_RULES.cgpa,
+  'Programming': REC_RULES.programming,
+  'Aptitude': REC_RULES.aptitude,
+  'Backlogs': {title:'Clear pending backlogs', desc:'Prioritise clearing active backlogs â€” most companies filter these out before a drive.'},
+  '10th %': {title:"Board scores can't change now", desc:'Offset this by comfortably exceeding the other requirements.'},
+  '12th %': {title:"Board scores can't change now", desc:'Offset this by comfortably exceeding the other requirements.'}
+};
+
+const AIEngine = {
+  normalize(d){
+    return {
+      cgpa:d.cgpa/10, tenth:d.tenth/100, twelfth:d.twelfth/100, aptitude:d.aptitude/100,
+      communication:d.communication/10, programming:d.programming/10,
+      projects:Math.min(d.projects,5)/5, internships:Math.min(d.internships,3)/3, certifications:Math.min(d.certifications,4)/4
+    };
+  },
+  predictPlacement(d){
+    const n = this.normalize(d);
+    let composite = 0;
+    for(const k in WEIGHTS){ composite += n[k]*WEIGHTS[k]; }
+    const z = (composite-0.5)*8;
+    const prob = 1/(1+Math.exp(-z))*100;
+    return {prob, n};
+  },
+  categoryScores(d){
+    return {
+      Academic:(d.cgpa/10*100 + d.tenth + d.twelfth)/3,
+      Technical:(d.programming/10*100 + Math.min(d.projects,5)/5*100)/2,
+      Aptitude:(d.aptitude + d.communication/10*100)/2,
+      Experience:(Math.min(d.internships,3)/3*100 + Math.min(d.certifications,4)/4*100)/2
+    };
+  },
+  categoryBenchmarks(){
+    return {
+      Academic:(BENCH.cgpa/10*100 + 65 + 65)/3,
+      Technical:(BENCH.programming/10*100 + Math.min(BENCH.projects,5)/5*100)/2,
+      Aptitude:(BENCH.aptitude + BENCH.communication/10*100)/2,
+      Experience:(Math.min(BENCH.internships,3)/3*100 + Math.min(BENCH.certifications,4)/4*100)/2
+    };
+  },
+  careerGuidance(n){
+    return ROLES.map(r=>{
+      let score=0;
+      for(const k in r.weights){ score += (n[k]||0)*r.weights[k]; }
+      return {name:r.name, match:Math.round(Math.min(score,1)*100)};
+    }).sort((a,b)=>b.match-a.match);
+  },
+  skillGap(d){
+    const gaps = Object.keys(BENCH).map(k=>({key:k, ratio:d[k]/BENCH[k]})).sort((a,b)=>a.ratio-b.ratio);
+    const weakKeys = gaps.filter(g=>g.ratio<0.9).map(g=>g.key);
+    const strongKeys = gaps.filter(g=>g.ratio>=1.0).map(g=>g.key);
+    const ranked = weakKeys.length ? weakKeys : gaps.slice(0,3).map(g=>g.key);
+    return {gaps, weakKeys, strongKeys, ranked, nameMap:NAME_MAP};
+  },
+  companyReadiness(d){
+    return COMPANY_TIERS.map(tier=>{
+      const criteria = [
+        {name:'CGPA', ratio:Math.min(d.cgpa/tier.minCgpa,1), req:`â‰¥ ${tier.minCgpa}`, have:d.cgpa},
+        {name:'10th %', ratio:Math.min(d.tenth/tier.minTenth,1), req:`â‰¥ ${tier.minTenth}`, have:d.tenth},
+        {name:'12th %', ratio:Math.min(d.twelfth/tier.minTwelfth,1), req:`â‰¥ ${tier.minTwelfth}`, have:d.twelfth},
+        {name:'Backlogs', ratio: d.backlogs<=tier.maxBacklogs ? 1 : Math.max(0,1-(d.backlogs-tier.maxBacklogs)*0.34), req:`â‰¤ ${tier.maxBacklogs}`, have:d.backlogs}
+      ];
+      if(tier.minProgramming) criteria.push({name:'Programming', ratio:Math.min(d.programming/tier.minProgramming,1), req:`â‰¥ ${tier.minProgramming}/10`, have:d.programming});
+      if(tier.minAptitude) criteria.push({name:'Aptitude', ratio:Math.min(d.aptitude/tier.minAptitude,1), req:`â‰¥ ${tier.minAptitude}`, have:d.aptitude});
+      const score = Math.round(criteria.reduce((s,c)=>s+c.ratio,0)/criteria.length*100);
+      const weakest = criteria.filter(c=>c.ratio<1).sort((a,b)=>a.ratio-b.ratio);
+      const strongest = criteria.filter(c=>c.ratio>=1);
+      return {name:tier.name, score, criteria, weakest, strongest};
+    });
+  },
+  roadmap(ranked){
+    const focus = ranked.length ? ranked : ['programming','aptitude','projects'];
+    const p1 = REC_RULES[focus[0]] || REC_RULES.programming;
+    const p2 = REC_RULES[focus[1]] || REC_RULES.projects;
+    const p3 = REC_RULES[focus[2]] || REC_RULES.communication;
+    return [
+      {title:'Month 1', sub:'Fix the biggest gap', items:[p1.title, 'Track progress weekly against the skill-gap chart', 'Solve 1â€“2 coding/aptitude problems daily']},
+      {title:'Month 2', sub:'Build proof of skill', items:[p2.title, 'Publish your work on GitHub / a portfolio page', 'Start applying to 2â€“3 companies per week']},
+      {title:'Month 3', sub:'Interview-ready polish', items:[p3.title, 'Run at least 3 mock interviews', 'Tailor your resume per role and revisit weak areas']}
+    ];
+  },
+  computeATS(text){
+    const lower = text.toLowerCase();
+    const wc = text.trim().split(/\s+/).filter(Boolean).length;
+    const foundSkills = SKILL_KEYWORDS.filter(k=>lower.includes(k));
+    const skillRatio = Math.min(foundSkills.length/8,1);
+    const numberHits = (text.match(/\d+%|\d+\+|\b\d{2,}\b/g)||[]).length;
+    const quantRatio = Math.min(numberHits/3,1);
+    const actionVerbs = ['managed','built','developed','led','improved','designed','implemented','created','optimized','analyzed','automated','launched'];
+    const verbHits = actionVerbs.filter(v=>lower.includes(v)).length;
+    const verbRatio = Math.min(verbHits/5,1);
+    const sections = ['education','experience','project','skill'];
+    const sectionHits = sections.filter(s=>lower.includes(s)).length;
+    const sectionRatio = sectionHits/sections.length;
+    const hasEmail = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(text);
+    const hasPhone = /\b\d{10}\b|\+\d{1,3}[\s-]?\d{6,}/.test(text);
+    const contactRatio = (hasEmail?0.5:0) + (hasPhone?0.5:0);
+    const lengthRatio = wc>=150 && wc<=800 ? 1 : Math.max(0, 1-Math.abs(wc-400)/600);
+
+    const breakdown = [
+      {label:'Skill keyword density', ratio:skillRatio, weight:25},
+      {label:'Quantifiable achievements', ratio:quantRatio, weight:15},
+      {label:'Action verbs used', ratio:verbRatio, weight:20},
+      {label:'Section structure (education/experience/skills)', ratio:sectionRatio, weight:15},
+      {label:'Contact info present', ratio:contactRatio, weight:10},
+      {label:'Resume length', ratio:lengthRatio, weight:15}
+    ];
+    const score = Math.round(breakdown.reduce((s,b)=>s+b.ratio*b.weight,0));
+    return {score, breakdown, foundSkills, wc};
+  },
+  evaluateAnswer(q, answer){
+    const words = answer.trim().split(/\s+/).filter(Boolean);
+    const wc = words.length;
+    const lower = answer.toLowerCase();
+    const starWords = ['situation','task','action','result','because','therefore','learned','achieved'];
+    const starHits = starWords.filter(w=>lower.includes(w)).length;
+    const qWords = q.text.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>4);
+    const overlap = qWords.length ? qWords.filter(w=>lower.includes(w)).length/qWords.length : 0;
+    const hasNumbers = /\d/.test(answer);
+    let score = Math.min(wc/60,1)*3 + Math.min(starHits,2)*1.5 + overlap*3 + (hasNumbers?1:0);
+    score = Math.round(Math.min(score,10)*10)/10;
+    const fb = [];
+    if(wc===0) fb.push('Write an answer first â€” even a rough attempt helps.');
+    else if(wc<20) fb.push('Your answer is quite short â€” aim for 40â€“100 words with a specific example.');
+    else if(wc>250) fb.push('Good depth, but keep it tighter â€” 100â€“150 words is usually the spoken sweet spot.');
+    else fb.push('Good length for a spoken answer.');
+    if(wc>0){
+      if(starHits===0) fb.push('Try structuring it as Situation â†’ Task â†’ Action â†’ Result â€” it makes the answer easier to follow.');
+      else fb.push('Nice â€” your answer already shows some structure.');
+      if(!hasNumbers) fb.push('Where possible, add a number or measurable outcome to make it concrete.');
+      if(overlap<0.2) fb.push("Try to directly reference the question's own terms so the interviewer can tell you understood it.");
+    }
+    return {score, feedback:fb};
+  },
+  notifications(state){
+    const list = [];
+    if(state.swr.weakKeys.length){
+      const top = state.swr.weakKeys[0];
+      list.push({title:'Skill improvement reminder', body:(REC_RULES[top]||{}).desc || `Work on ${NAME_MAP[top]}.`});
+    }
+    if(!state.resumeScanned){
+      list.push({title:'Resume not scanned yet', body:'Head to the Resume tab and run an AI scan for your ATS score and missing-skill list.'});
+    } else if(state.atsScore!=null && state.atsScore<60){
+      list.push({title:'Resume improvement suggestion', body:`Your ATS score is ${state.atsScore}/100 â€” check the Resume tab for fixes.`});
+    }
+    list.push({title:'Interview preparation reminder', body:'Try one mock question on the Interview tab today.'});
+    list.push({title:'Placement readiness update', body: state.prob>=65
+      ? `You're at ${Math.round(state.prob)}% â€” in the "${state.statusLabel}" band. Keep it up.`
+      : `You're at ${Math.round(state.prob)}% â€” focus on ${NAME_MAP[state.swr.weakKeys[0]]||'your weakest area'} to move up a band.`});
+    return list.slice(0,4);
+  },
+  chatbotRespond(query, state){
+    const q = query.toLowerCase();
+    if(/^(hi|hello|hey|hii|namaste|namaskar)\b/.test(q)) return `Hi! Your current readiness estimate is ${Math.round(state.prob)}% (${state.statusLabel}). I can help you understand your score, find a next step, or prepare for an interview. What would you like to work on?`;
+    if(q.includes('formula') || q.includes('calculate') || q.includes('benchmark') || (q.includes('how is') && (q.includes('score') || q.includes('percentage')))) return `This ${Math.round(state.prob)}% is a profile-based readiness estimate. It combines academic, technical, aptitude, communication and experience indicators against the project's chosen benchmarks. It is guidance, not a trained-model probability or a guarantee of placement. Open Analytics or Dashboard to see the factor breakdown.`;
+    if(q.includes('project') || q.includes('portfolio')) return `Your profile lists ${state.d.projects} project(s). For third year, choose one project related to your target role, finish a small working feature, put the code and a clear README on GitHub, and practise explaining your own contribution. A demonstrable project is more useful than several unfinished ones.`;
+    if(q.includes('internship') || q.includes('experience')) return `Your profile lists ${state.d.internships} internship(s). If you haven't done one yet, try a small team project, a verified campus role, or a well-scoped open-source contribution while applying to internships. Keep the work and outcome concrete on your resume; don't claim experience you haven't had.`;
+    if(q.includes('third year') || q.includes('3rd year') || q.includes('third-year')) return `For third year, keep the plan manageable: pick one target role, strengthen DSA or role-specific fundamentals, complete one project you can demo, practise aptitude weekly, and start applying to internships. Your current weakest profile areas are ${state.swr.weakKeys.slice(0,2).map(k=>NAME_MAP[k]).join(' and ')||'not obvious'}; use those to choose this week's task.`;
+    if(q.includes('interview') || q.includes('mock')) return `Try the Interview tab for a practice question. A useful routine is: answer in 1–2 minutes, explain your reasoning, give one example from a project, then note one improvement. Your suggested career fit is ${state.roleMatches[0]?.name||'still being calculated'}.`;
+    if(q.includes('dataset') || q.includes('train') || q.includes('ml model')) return `The ML Lab trains and evaluates the placement classifier from its CSV records using a train/test split and model comparison. This chat assistant is a separate feature: in local demo mode it uses profile-aware rules; with the configured backend it can call the connected language model. The readiness percentage shown here should not be described as the classifier's test accuracy.`;
+    if(q.includes('cgpa') || q.includes('marks') || q.includes('academic')) return `Your current CGPA is ${state.d.cgpa}/10, with ${state.d.tenth}% in 10th and ${state.d.twelfth}% in 12th. Keep meeting each company's published eligibility criteria; improving grades can help, but pair it with role skills, projects and interview practice.`;
+    const bigTech = ['google','amazon','microsoft','meta','apple','netflix','flipkart product'];
+    const massRecruiters = ['tcs','infosys','wipro','cognizant','accenture','capgemini','hcl'];
+    if(bigTech.some(c=>q.includes(c))){
+      const tier = state.companyReadiness.find(t=>t.name.includes('Tier 1'));
+      return `Companies like that sit in our "Tier 1 â€” product/dream companies" bracket. Your current readiness there is ${tier.score}%. ${tier.weakest.length ? 'Biggest gap: '+tier.weakest[0].name+'. '+((ACTION_MAP[tier.weakest[0].name]||{}).desc||'') : 'You already meet the benchmarks for this tier.'}`;
+    }
+    if(massRecruiters.some(c=>q.includes(c))){
+      const tier = state.companyReadiness.find(t=>t.name.includes('Tier 2'));
+      return `That falls in our "Tier 2 â€” mass IT recruiters" bracket. Your readiness there is ${tier.score}%. ${tier.weakest.length ? 'Focus on: '+tier.weakest[0].name+'.' : 'You already meet this bar.'}`;
+    }
+    if(q.includes('learn next') || q.includes('what should i learn') || q.includes('what to learn') || q.includes('kya sikhu') || q.includes('kya seekhu')){
+      const top = state.swr.ranked[0];
+      const rule = REC_RULES[top];
+      return rule ? `Focus next on: ${rule.title}. ${rule.desc}` : 'Your profile looks solid â€” keep building projects and prepping for interviews.';
+    }
+    if((q.includes('why') || q.includes('kyu') || q.includes('kam')) && (q.includes('low')||q.includes('score')||q.includes('probability')||q.includes('mera'))){
+      const weak = state.swr.weakKeys.slice(0,2).map(k=>NAME_MAP[k]);
+      return weak.length ? `Your score is mainly held back by: ${weak.join(' and ')}. Improving these moves your readiness estimate fastest.` : 'Your score is solid â€” no major weak spots detected right now.';
+    }
+    if(q.includes('communication')){ return REC_RULES.communication.desc; }
+    if(q.includes('roadmap') || q.includes('plan')){
+      return `Your Month 1 focus: ${state.roadmap[0].items[0]}. See the full plan on the Roadmap tab.`;
+    }
+    if(q.includes('ats') || q.includes('resume')){
+      return state.atsScore!=null ? `Your resume's estimated ATS score is ${state.atsScore}/100. See the Resume tab for the full breakdown.` : "I don't see a scanned resume yet â€” go to the Resume tab and run a scan first.";
+    }
+    if(q.includes('career') || q.includes('role') || q.includes('job')){
+      const top = state.roleMatches[0];
+      return `Your best-fit role right now is ${top.name} (${top.match}% match). See the Skills tab for the full ranking.`;
+    }
+    if(q.includes('placed') || q.includes('placement') || q.includes('probability') || q.includes('chance')){
+      return `Your current readiness estimate is ${Math.round(state.prob)}% (${state.statusLabel}). See the Dashboard tab for the full breakdown.`;
+    }
+    return "I can answer questions about your readiness estimate, weak areas, career fit, resume ATS score, or your roadmap â€” try one of the suggestions below, or rephrase your question.";
+  }
+};
+
+const SKILL_KEYWORDS = ['python','java','c++','javascript','typescript','react','node','angular',
+  'sql','mysql','mongodb','aws','azure','gcp','docker','kubernetes','machine learning','deep learning',
+  'data structures','dsa','html','css','flask','django','spring','git','tensorflow','pandas','numpy'];
+
+/* ============================================================
+   STATE + MAIN RECOMPUTE LOOP
+   ============================================================ */
+let STATE = { resumeScanned:false, atsScore:null, snapshots:[] };
+let radar, trendChart;
+
+function readInputs(){
+  return {
+    cgpa:+document.getElementById('cgpa').value,
+    tenth:+document.getElementById('tenth').value,
+    twelfth:+document.getElementById('twelfth').value,
+    aptitude:+document.getElementById('aptitude').value,
+    communication:+document.getElementById('communication').value,
+    programming:+document.getElementById('programming').value,
+    projects:+document.getElementById('projects').value,
+    internships:+document.getElementById('internships').value,
+    certifications:+document.getElementById('certifications').value,
+    backlogs:+document.getElementById('backlogs').value
+  };
+}
+
+function statusFor(prob){
+  if(prob<40) return {label:'Needs work', color:'#DC2626', desc:'Several core factors are below the benchmark â€” the recommendations below will move the needle fastest.'};
+  if(prob<65) return {label:'Developing', color:'#B4790A', desc:'A solid foundation â€” a few targeted improvements will move this meaningfully.'};
+  if(prob<85) return {label:'Strong', color:'#1E9E6B', desc:'A competitive profile. Keep sharpening your weaker areas to push into the top bracket.'};
+  return {label:'Excellent', color:'#1E9E6B', desc:'You are well placed against typical hiring benchmarks â€” focus on interview polish from here.'};
+}
+
+function recomputeAll(){
+  const d = readInputs();
+  const {prob, n} = AIEngine.predictPlacement(d);
+  const scores = AIEngine.categoryScores(d);
+  const swr = AIEngine.skillGap(d);
+  const roleMatches = AIEngine.careerGuidance(n);
+  const companyReadiness = AIEngine.companyReadiness(d);
+  const roadmap = AIEngine.roadmap(swr.ranked);
+  const st = statusFor(prob);
+
+  STATE = Object.assign(STATE, {d, prob, n, scores, swr, roleMatches, companyReadiness, roadmap, statusLabel:st.label});
+
+  // Each render step runs independently â€” a problem in one (e.g. a chart on a
+  // hidden tab) can never block the others, including the Home page, from updating.
+  safeRender('dashboard', ()=>renderDashboard(d, prob, scores, swr, st));
+  safeRender('home', ()=>renderHome(d, prob, roleMatches, companyReadiness, swr, st));
+  safeRender('companies', ()=>renderCompanies(companyReadiness));
+  safeRender('skills', ()=>renderSkillsPage(roleMatches, d, swr));
+  safeRender('roadmap', ()=>renderRoadmap(roadmap));
+  safeRender('benchCompare', ()=>renderBenchCompare(scores));
+  safeRender('insightStrip', ()=>renderInsightStrip(prob, swr, st));
+  safeRender('notifications', ()=>renderNotifications());
+  safeRender('simulator', ()=>{ if(typeof simSync==='function') simSync(); });
+}
+function safeRender(name, fn){
+  try{ fn(); }catch(e){ console.error('Render error in "'+name+'":', e); }
+}
+
+/* ============================================================
+   RENDER: DASHBOARD
+   ============================================================ */
+const GAP_META = [
+  {key:'cgpa', label:'CGPA', unit:'/10', max:10},
+  {key:'aptitude', label:'Aptitude score', unit:'/100', max:100},
+  {key:'communication', label:'Communication', unit:'/10', max:10},
+  {key:'programming', label:'Programming', unit:'/10', max:10},
+  {key:'projects', label:'Projects', unit:'', max:6},
+  {key:'internships', label:'Internships', unit:'', max:3},
+  {key:'certifications', label:'Certifications', unit:'', max:4},
+];
+
+function drawRunway(prob){
+  const svg = document.getElementById('runwaySvg');
+  const w=900,h=150,padX=40,trackY=100,trackW=w-padX*2;
+  const x = padX + (prob/100)*trackW;
+  let marks='';
+  [0,25,50,75,100].forEach(v=>{
+    const mx = padX + (v/100)*trackW;
+    marks += `<line x1="${mx}" y1="${trackY-6}" x2="${mx}" y2="${trackY+6}" stroke="#8A87A0" stroke-width="1.4" opacity="0.55"/>
+      <text x="${mx}" y="${trackY+26}" fill="#8A87A0" font-size="11" font-family="JetBrains Mono, monospace" text-anchor="middle">${v}</text>`;
+  });
+  const color = prob<40?'#DC2626':prob<65?'#B4790A':'#1E9E6B';
+  svg.innerHTML = `
+    <line x1="${padX}" y1="${trackY}" x2="${w-padX}" y2="${trackY}" stroke="#C9C4EE" stroke-width="2" stroke-dasharray="2 8" opacity="0.7"/>
+    <line x1="${padX}" y1="${trackY}" x2="${x}" y2="${trackY}" stroke="${color}" stroke-width="3"/>
+    ${marks}
+    <g transform="translate(${x},${trackY-14}) rotate(-35)"><path d="M0 12 L26 0 L0 -12 L6 0 Z" fill="${color}"/></g>
+    <circle cx="${x}" cy="${trackY}" r="4" fill="${color}"/>`;
+}
+
+function initRadar(scores){
+  const canvas = document.getElementById('radarChart');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  radar = new Chart(ctx, {
+    type:'radar',
+    data:{ labels:['Academic','Technical','Aptitude & Comm.','Experience'],
+      datasets:[{label:'Profile score', data:[scores.Academic,scores.Technical,scores.Aptitude,scores.Experience],
+        backgroundColor:'rgba(91,79,229,0.15)', borderColor:'#5B4FE5', pointBackgroundColor:'#5B4FE5', borderWidth:2, pointRadius:3}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{r:{min:0,max:100, ticks:{display:false,stepSize:25}, grid:{color:'#E4E1F5'}, angleLines:{color:'#E4E1F5'}, pointLabels:{color:'#8A87A0', font:{family:'Plus Jakarta Sans', size:11}}}}}
+  });
+}
+function updateRadar(scores){ radar.data.datasets[0].data=[scores.Academic,scores.Technical,scores.Aptitude,scores.Experience]; radar.update(); }
+
+function renderGapRowsInto(containerId, d){
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  box.innerHTML='';
+  GAP_META.forEach(m=>{
+    const val=d[m.key], bench=BENCH[m.key];
+    const pctOfBench = Math.min((val/bench)*100,140);
+    const barPct = Math.min((val/m.max)*100,100);
+    const benchPct = Math.min((bench/m.max)*100,100);
+    let color='#1E9E6B';
+    if(pctOfBench<70) color='#DC2626'; else if(pctOfBench<100) color='#B4790A';
+    const row=document.createElement('div');
+    row.className='gap-row';
+    row.innerHTML=`<div class="g-head"><span class="name">${m.label}</span><span class="metric">${val}${m.unit} <span style="opacity:.6">/ bench ${bench}${m.unit}</span></span></div>
+      <div class="g-track"><div class="g-fill" style="width:${barPct}%;background:${color};"></div><div class="g-bench" style="left:${benchPct}%;"></div></div>`;
+    box.appendChild(row);
+  });
+}
+
+function renderDashboard(d, prob, scores, swr, st){
+  document.getElementById('probNum').textContent = Math.round(prob);
+  const statusEl = document.getElementById('statusLabel');
+  statusEl.textContent = st.label; statusEl.style.color = st.color;
+  document.getElementById('statusDesc').textContent = st.desc;
+  drawRunway(prob);
+  if(!radar) initRadar(scores); else updateRadar(scores);
+  renderGapRowsInto('gapRows', d);
+
+  const strEl = document.getElementById('strengthsList');
+  const weakEl = document.getElementById('weaknessList');
+  strEl.innerHTML = swr.strongKeys.length ? swr.strongKeys.map(k=>`<li>${NAME_MAP[k]}</li>`).join('') : '<li style="color:var(--muted)">Build a strength first â€” see recommendations â†’</li>';
+  weakEl.innerHTML = swr.weakKeys.length ? swr.weakKeys.map(k=>`<li>${NAME_MAP[k]}</li>`).join('') : '<li style="color:var(--muted)">No significant gaps detected</li>';
+
+  const top = swr.ranked[0];
+  const rule = REC_RULES[top];
+  const nextBox = document.getElementById('nextAction');
+  if(rule){
+    nextBox.innerHTML = `<span class="dot" style="background:#DC2626;width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none;"></span>
+      <span class="txt"><strong>${rule.title}</strong><span>${rule.desc}</span></span>`;
+  } else {
+    nextBox.innerHTML = `<span class="dot" style="background:#1E9E6B;width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none;"></span>
+      <span class="txt"><strong>You're in strong shape</strong><span>Keep your momentum â€” maintain your CGPA and start mock interview practice.</span></span>`;
+  }
+}
+
+/* ============================================================
+   RENDER: HOME
+   ============================================================ */
+function renderHome(d, prob, roleMatches, companyReadiness, swr, st){
+  document.getElementById('homeScore').textContent = Math.round(prob)+'%';
+  document.getElementById('homeStatus').textContent = st.label;
+  document.getElementById('homeCareer').textContent = roleMatches[0].name + ' (' + roleMatches[0].match + '%)';
+  document.getElementById('homeWeak').textContent = swr.weakKeys.length ? NAME_MAP[swr.weakKeys[0]] : 'None detected';
+  const bestTier = companyReadiness.slice().sort((a,b)=>b.score-a.score)[0];
+  document.getElementById('homeCompany').textContent = bestTier.name.replace(/^Tier \d+ â€” /,'').replace('PSU / Government (GATE route)','PSU / Government') + ' (' + bestTier.score + '%)';
+
+  const topWeak = swr.weakKeys[0];
+  const topRule = REC_RULES[topWeak];
+  const insight = swr.weakKeys.length
+    ? `Your readiness estimate is ${Math.round(prob)}% â€” mainly driven by ${swr.strongKeys.length ? NAME_MAP[swr.strongKeys[0]].toLowerCase() : 'your current profile'}, but ${NAME_MAP[topWeak].toLowerCase()} is holding you back. ${topRule?topRule.desc:''} Your best-fit role right now is ${roleMatches[0].name} at ${roleMatches[0].match}% match.`
+    : `Your readiness estimate is ${Math.round(prob)}% â€” a strong, well-rounded profile. Your best-fit role right now is ${roleMatches[0].name} at ${roleMatches[0].match}% match. Keep polishing for interviews.`;
+  document.getElementById('homeInsight').textContent = insight;
+
+  const recBox = document.getElementById('homeRecs');
+  recBox.innerHTML='';
+  const icons = ['ðŸ“Š','ðŸŽ¯','ðŸš€'];
+  swr.ranked.slice(0,3).forEach((k,i)=>{
+    const rule = REC_RULES[k]; if(!rule) return;
+    const row = document.createElement('div');
+    row.className='rec-mini';
+    row.innerHTML = `<div class="ico">${icons[i]||'âœ¦'}</div><div><strong>${rule.title}</strong><span>${rule.desc}</span></div>`;
+    recBox.appendChild(row);
+  });
+  if(recBox.children.length===0){
+    recBox.innerHTML = `<div class="rec-mini"><div class="ico">âœ¦</div><div><strong>You're in strong shape</strong><span>Keep building projects and start mock interview practice.</span></div></div>`;
+  }
+}
+
+/* ============================================================
+   RENDER: COMPANIES
+   ============================================================ */
+function renderCompanies(companyReadiness){
+  const box = document.getElementById('companyRows');
+  box.innerHTML='';
+  companyReadiness.forEach(t=>{
+    const color = t.score>=75?'#1E9E6B':t.score>=50?'#B4790A':'#DC2626';
+    const whyText = t.weakest.length
+      ? 'Held back by: ' + t.weakest.slice(0,2).map(c=>`${c.name} (need ${c.req}, you have ${c.have})`).join('; ')
+      : 'You meet every benchmark for this tier.';
+    const actionText = t.weakest.length ? (ACTION_MAP[t.weakest[0].name]||{}).desc || '' : 'Maintain this and start interview prep.';
+    const row = document.createElement('div');
+    row.className='company-row';
+    row.innerHTML = `
+      <div class="cr-head"><h4>${t.name}</h4><span class="cr-score" style="color:${color};">${t.score}%</span></div>
+      <div class="cr-bar"><div class="fill" style="width:${t.score}%;background:${color};"></div></div>
+      <p class="cr-why">${whyText}</p>
+      <p class="cr-actions"><strong>Suggested next step:</strong> ${actionText}</p>`;
+    box.appendChild(row);
+  });
+}
+
+/* ============================================================
+   RENDER: SKILLS
+   ============================================================ */
+function renderSkillsPage(roleMatches, d, swr){
+  const roleBox = document.getElementById('roleRows');
+  roleBox.innerHTML='';
+  roleMatches.forEach((r,i)=>{
+    const row=document.createElement('div');
+    row.className='gap-row';
+    row.innerHTML=`<div class="g-head"><span class="name">${i===0?'â˜… ':''}${r.name}</span><span class="metric">${r.match}% match</span></div>
+      <div class="g-track"><div class="g-fill" style="width:${r.match}%;background:linear-gradient(90deg,#5B4FE5,#7C6CF6);"></div></div>`;
+    roleBox.appendChild(row);
+  });
+  renderGapRowsInto('gapRowsSkills', d);
+
+  const courseBox = document.getElementById('courseList');
+  courseBox.innerHTML='';
+  const COURSE_MAP = {
+    programming:{icon:'ðŸ’»', text:'Data Structures & Algorithms â€” GeeksforGeeks / freeCodeCamp, plus 2 practice problems a day.'},
+    aptitude:{icon:'ðŸ§®', text:'Quantitative Aptitude practice sets â€” IndiaBIX / RS Aggarwal, 30 min daily.'},
+    projects:{icon:'ðŸ› ï¸', text:'Build a full-stack project (e.g., a small SaaS clone) and document it well on GitHub.'},
+    internships:{icon:'ðŸ¢', text:'Apply to short remote internships on Internshala / LinkedIn while studying.'},
+    certifications:{icon:'ðŸ“œ', text:'AWS Cloud Practitioner or Google Data Analytics Certificate â€” both have free/low-cost tracks.'},
+    communication:{icon:'ðŸŽ¤', text:'Join a Toastmasters-style group or do weekly mock interviews with a friend.'},
+    cgpa:{icon:'ðŸ“˜', text:'Block 2 focused study hours daily this semester on your weakest subject.'}
+  };
+  (swr.ranked.length?swr.ranked:['programming','aptitude','projects']).slice(0,5).forEach(k=>{
+    const c = COURSE_MAP[k]; if(!c) return;
+    const row=document.createElement('div');
+    row.className='course-row';
+    row.innerHTML=`<div class="ico">${c.icon}</div><div><strong>${NAME_MAP[k]}</strong><span>${c.text}</span></div>`;
+    courseBox.appendChild(row);
+  });
+}
+
+/* ============================================================
+   RENDER: ROADMAP
+   ============================================================ */
+function renderRoadmap(roadmap){
+  const grid = document.getElementById('roadmapGrid');
+  grid.innerHTML='';
+  roadmap.forEach(p=>{
+    const col=document.createElement('div');
+    col.className='card';
+    col.innerHTML=`<h3 style="color:var(--indigo);">${p.title}</h3><p class="sub">${p.sub}</p><ul style="margin:0;padding-left:18px;font-size:13px;color:var(--ink);">${p.items.map(i=>`<li style="margin-bottom:8px;">${i}</li>`).join('')}</ul>`;
+    grid.appendChild(col);
+  });
+}
+
+/* ============================================================
+   RENDER: ANALYTICS
+   ============================================================ */
+function loadSnapshots(){
+  try{ const raw = localStorage.getItem('runway_snapshots'); return raw ? JSON.parse(raw) : []; }catch(e){ return []; }
+}
+function saveSnapshots(list){
+  try{ localStorage.setItem('runway_snapshots', JSON.stringify(list)); }catch(e){ /* storage unavailable, ignore */ }
+}
+function initTrendChart(){
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  trendChart = new Chart(ctx, {
+    type:'line',
+    data:{labels:[], datasets:[
+      {label:'Your probability', data:[], borderColor:'#5B4FE5', backgroundColor:'rgba(91,79,229,0.12)', tension:0.3, fill:true},
+      {label:'Placed-student benchmark', data:[], borderColor:'#8A87A0', borderDash:[5,5], pointRadius:0}
+    ]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans', size:11}}}},
+      scales:{y:{min:0,max:100, grid:{color:'#E4E1F5'}}, x:{grid:{display:false}}}}
+  });
+}
+function renderAnalytics(){
+  const snaps = STATE.snapshots;
+  const labels = snaps.map(s=>s.date);
+  const probs = snaps.map(s=>s.prob);
+  const bench = snaps.map(()=>65);
+  if(!trendChart) initTrendChart();
+  trendChart.data.labels = labels;
+  trendChart.data.datasets[0].data = probs;
+  trendChart.data.datasets[1].data = bench;
+  trendChart.update();
+
+  const list = document.getElementById('snapList');
+  if(!snaps.length){ list.innerHTML = '<p class="sub">No snapshots logged yet.</p>'; }
+  else{
+    list.innerHTML = snaps.slice().reverse().map(s=>`<div class="snap-row"><span>${s.date}</span><span class="mono">${s.prob}%</span></div>`).join('');
+  }
+}
+function renderBenchCompare(scores){
+  const bench = AIEngine.categoryBenchmarks();
+  const box = document.getElementById('benchCompare');
+  if(!box) return;
+  box.innerHTML='';
+  Object.keys(scores).forEach(k=>{
+    const val = Math.round(scores[k]), b = Math.round(bench[k]);
+    const color = val>=b ? '#1E9E6B' : '#DC2626';
+    const row=document.createElement('div');
+    row.className='gap-row';
+    row.innerHTML=`<div class="g-head"><span class="name">${k}</span><span class="metric">${val} <span style="opacity:.6">/ bench ${b}</span></span></div>
+      <div class="g-track"><div class="g-fill" style="width:${Math.min(val,100)}%;background:${color};"></div><div class="g-bench" style="left:${Math.min(b,100)}%;"></div></div>`;
+    box.appendChild(row);
+  });
+}
+
+/* ============================================================
+   RENDER: INSIGHT STRIP + NOTIFICATIONS
+   ============================================================ */
+function renderInsightStrip(prob, swr, st){
+  const el = document.getElementById('stripText');
+  const top = swr.ranked[0];
+  const rule = REC_RULES[top];
+  el.innerHTML = rule
+    ? `You're at <b>${Math.round(prob)}%</b> (${st.label}). Priority: <b>${rule.title}</b>.`
+    : `You're at <b>${Math.round(prob)}%</b> (${st.label}). Keep up the strong profile.`;
+}
+function renderNotifications(){
+  const list = AIEngine.notifications(STATE);
+  document.getElementById('notifCount').textContent = list.length;
+  const box = document.getElementById('notifList');
+  box.innerHTML = list.length ? list.map(n=>`<div class="notif-item"><div class="ni-title">${n.title}</div><div class="ni-body">${n.body}</div></div>`).join('') : '<div class="notif-empty">All caught up.</div>';
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function gotoPage(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.dataset.page===name));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(name==='analytics') renderAnalytics();
+  if(name==='analytics') loadPeerStats();
+  // charts initialized while their tab was hidden can end up with a 0-size
+  // canvas â€” force a resize now that the tab is actually visible.
+  if(name==='mllab' && !mlLabLoaded) loadMLLab();
+  if(name==='dashboard' && radar) setTimeout(()=>radar.resize(), 50);
+  if(name==='analytics' && trendChart) setTimeout(()=>trendChart.resize(), 50);
+}
+document.querySelectorAll('.tab-btn').forEach(btn=> btn.addEventListener('click', ()=>gotoPage(btn.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(el=> el.addEventListener('click', (e)=>{ e.preventDefault(); gotoPage(el.dataset.goto); }));
+
+
+document.getElementById('notifBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.getElementById('syncPanel').classList.remove('open');
+  document.getElementById('notifPanel').classList.toggle('open');
+});
+/* ============================================================
+   DARK MODE TOGGLE
+   ============================================================ */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.getElementById('themeIcon');
+  icon.innerHTML = theme==='dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>'
+    : '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>';
+  try{ localStorage.setItem('runway_theme', theme); }catch(e){}
+}
+document.getElementById('themeToggleBtn').addEventListener('click', ()=>{
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current==='dark' ? 'light' : 'dark');
+});
+(function initTheme(){
+  let saved = 'light';
+  try{ saved = localStorage.getItem('runway_theme') || 'light'; }catch(e){}
+  applyTheme(saved);
+})();
+
+document.getElementById('syncBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.getElementById('notifPanel').classList.remove('open');
+  document.getElementById('syncPanel').classList.toggle('open');
+});
+document.addEventListener('click', (e)=>{
+  const panel = document.getElementById('notifPanel');
+  if(panel.classList.contains('open') && !panel.contains(e.target)) panel.classList.remove('open');
+  const sp = document.getElementById('syncPanel');
+  if(sp.classList.contains('open') && !sp.contains(e.target)) sp.classList.remove('open');
+});
+
+/* ============================================================
+   BACKEND SYNC + AUTH (token-based)
+   ============================================================ */
+let backendConnected = false;
+let currentRoll = null;
+let authToken = null;
+
+function setSyncStatus(text, dotColor){
+  document.getElementById('syncStatus').textContent = text;
+  document.getElementById('syncDot').style.background = dotColor;
+}
+
+async function apiFetch(url, options){
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 8000);
+  try{
+    const res = await fetch(url, Object.assign({signal:controller.signal}, options));
+    clearTimeout(timeout);
+    return res;
+  }catch(e){
+    clearTimeout(timeout);
+    throw e;
+  }
+}
+
+/* Same as apiFetch but attaches the Bearer token automatically, and
+   resets the session on a 401 (expired/invalid) so the UI can prompt
+   the student to log in again instead of silently failing forever. */
+async function authedFetch(path, options){
+  options = options || {};
+  const url = currentBackendUrl() + path;
+  const headers = Object.assign({'Content-Type':'application/json'}, options.headers||{});
+  if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
+  const res = await apiFetch(url, Object.assign({}, options, {headers}));
+  if(res.status === 401){
+    backendConnected = false; authToken = null;
+    try{ localStorage.removeItem('runway_backend'); }catch(e){}
+    setSyncStatus('Session expired â€” please log in again.', '#DC2626');
+  }
+  return res;
+}
+
+function currentBackendUrl(){
+  return document.getElementById('backendUrl').value.trim().replace(/\/$/,'');
+}
+
+function profileToPayload(){
+  const d = readInputs();
+  return Object.assign({}, d, {
+    resume_text: document.getElementById('resumeText').value || null,
+    ats_score: STATE.atsScore,
+    prob: STATE.prob!=null ? Math.round(STATE.prob) : null,
+    portfolio: STATE.portfolio || [],
+    tests: STATE.tests || {}
+  });
+}
+
+function applyProfileFromServer(data){
+  ['cgpa','tenth','twelfth','aptitude','communication','programming','projects','internships','certifications','backlogs'].forEach(k=>{
+    if(data[k]!=null) document.getElementById(k).value = data[k];
+  });
+  document.getElementById('v_cgpa').textContent = document.getElementById('cgpa').value;
+  document.getElementById('v_apt').textContent = document.getElementById('aptitude').value;
+  document.getElementById('v_comm').textContent = document.getElementById('communication').value;
+  document.getElementById('v_prog').textContent = document.getElementById('programming').value;
+  if(data.resume_text){ document.getElementById('resumeText').value = data.resume_text; }
+  if(data.ats_score!=null){
+    STATE.resumeScanned = true; STATE.atsScore = data.ats_score;
+    document.getElementById('atsScore').textContent = data.ats_score;
+  }
+  if(data.portfolio){ try{ STATE.portfolio = typeof data.portfolio==='string' ? JSON.parse(data.portfolio) : data.portfolio; }catch(e){ STATE.portfolio = []; } }
+  if(data.tests){ try{ STATE.tests = typeof data.tests==='string' ? JSON.parse(data.tests) : data.tests; }catch(e){ STATE.tests = {}; } }
+  if(Array.isArray(data.snapshots)){
+    STATE.snapshots = data.snapshots.map(s=>({date:s.date, prob:Math.round(s.prob)}));
+    saveSnapshots(STATE.snapshots);
+  }
+  recomputeAll();
+  renderPortfolio();
+  loadJobs();
+  loadApplications();
+}
+
+function updateChatHeadSub(){
+  const el = document.getElementById('chatHeadSub');
+  if(!el) return;
+  el.textContent = backendConnected
+    ? 'Backed by real Claude AI (via your backend) â€” grounded in your live profile'
+    : 'Rule-based Q&A over your profile â€” connect a backend with an API key for real Claude answers';
+}
+
+document.getElementById('connectBtn').addEventListener('click', async ()=>{
+  const url = currentBackendUrl();
+  const roll = document.getElementById('rollNumber').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  const name = document.getElementById('studentName').value.trim();
+  if(!roll){ setSyncStatus('Enter a roll number first.', '#DC2626'); return; }
+  if(!password || password.length < 4){ setSyncStatus('Password must be at least 4 characters.', '#DC2626'); return; }
+  setSyncStatus('Connectingâ€¦', '#B4790A');
+  try{
+    const res = await apiFetch(url+'/api/auth/enter', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({roll_number:roll, password, name: name || undefined})
+    });
+    const payload = await res.json();
+    if(!res.ok) throw new Error(payload.error || 'Login failed');
+    authToken = payload.token; currentRoll = roll; backendConnected = true;
+    try{ localStorage.setItem('runway_backend', JSON.stringify({url, roll, token: authToken})); }catch(e){}
+    const full = await authedFetch('/api/students/'+encodeURIComponent(roll));
+    const data = await full.json();
+    applyProfileFromServer(data);
+    setSyncStatus((payload.created ? 'Account created â€” ' : 'Welcome back â€” ') + 'connected as '+roll+'.', '#1E9E6B');
+    updateChatHeadSub();
+  }catch(e){
+    backendConnected = false;
+    setSyncStatus(e.message || 'Could not reach the backend at that URL. Is it running?', '#DC2626');
+  }
+});
+
+document.getElementById('saveBtn').addEventListener('click', async ()=>{
+  if(!backendConnected || !currentRoll){ setSyncStatus('Log in first before saving.', '#DC2626'); return; }
+  setSyncStatus('Savingâ€¦', '#B4790A');
+  try{
+    const res = await authedFetch('/api/students/'+encodeURIComponent(currentRoll), {
+      method:'PUT', body:JSON.stringify(profileToPayload())
+    });
+    if(!res.ok) throw new Error('Save failed');
+    setSyncStatus('Saved âœ“ ('+new Date().toLocaleTimeString()+')', '#1E9E6B');
+  }catch(e){
+    setSyncStatus('Save failed â€” backend unreachable.', '#DC2626');
+  }
+});
+
+// Try to silently restore a previous session (same browser, saved token).
+(function tryAutoReconnect(){
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem('runway_backend')||'null'); }catch(e){}
+  if(!saved || !saved.token) return;
+  document.getElementById('backendUrl').value = saved.url;
+  document.getElementById('rollNumber').value = saved.roll;
+  authToken = saved.token; currentRoll = saved.roll;
+  authedFetch('/api/students/'+encodeURIComponent(saved.roll)).then(async res=>{
+    if(!res.ok) throw new Error('session invalid');
+    return res.json();
+  }).then(data=>{
+    backendConnected = true;
+    applyProfileFromServer(data);
+    setSyncStatus('Connected as '+saved.roll+' â€” profile loaded.', '#1E9E6B');
+    updateChatHeadSub();
+  }).catch(()=>{
+    backendConnected = false; authToken = null;
+    setSyncStatus('Backend offline or session expired â€” log in again.', '#8A87A0');
+  });
+})();
+
+/* ============================================================
+   "WHAT-IF" SIMULATOR â€” preview only, never touches the real profile
+   ============================================================ */
+function simSync(){
+  document.getElementById('sim_programming').value = document.getElementById('programming').value;
+  document.getElementById('sim_v_prog').textContent = document.getElementById('programming').value;
+  document.getElementById('sim_aptitude').value = document.getElementById('aptitude').value;
+  document.getElementById('sim_v_apt').textContent = document.getElementById('aptitude').value;
+  document.getElementById('sim_projects').value = document.getElementById('projects').value;
+  document.getElementById('sim_certifications').value = document.getElementById('certifications').value;
+  simUpdatePreview();
+}
+function simUpdatePreview(){
+  const base = readInputs();
+  const hypothetical = Object.assign({}, base, {
+    programming: +document.getElementById('sim_programming').value,
+    aptitude: +document.getElementById('sim_aptitude').value,
+    projects: +document.getElementById('sim_projects').value,
+    certifications: +document.getElementById('sim_certifications').value,
+  });
+  const {prob:currentProb} = AIEngine.predictPlacement(base);
+  const {prob:previewProb} = AIEngine.predictPlacement(hypothetical);
+  document.getElementById('sim_current').textContent = Math.round(currentProb)+'%';
+  document.getElementById('sim_preview').textContent = Math.round(previewProb)+'%';
+  document.getElementById('sim_preview').style.color = previewProb>currentProb ? 'var(--good)' : previewProb<currentProb ? 'var(--bad)' : 'var(--indigo)';
+}
+document.getElementById('sim_programming').addEventListener('input', (e)=>{ document.getElementById('sim_v_prog').textContent=e.target.value; simUpdatePreview(); });
+document.getElementById('sim_aptitude').addEventListener('input', (e)=>{ document.getElementById('sim_v_apt').textContent=e.target.value; simUpdatePreview(); });
+document.getElementById('sim_projects').addEventListener('input', simUpdatePreview);
+document.getElementById('sim_certifications').addEventListener('input', simUpdatePreview);
+document.getElementById('simResetBtn').addEventListener('click', simSync);
+document.getElementById('simApplyBtn').addEventListener('click', ()=>{
+  document.getElementById('programming').value = document.getElementById('sim_programming').value;
+  document.getElementById('v_prog').textContent = document.getElementById('sim_programming').value;
+  document.getElementById('aptitude').value = document.getElementById('sim_aptitude').value;
+  document.getElementById('v_apt').textContent = document.getElementById('sim_aptitude').value;
+  document.getElementById('projects').value = document.getElementById('sim_projects').value;
+  document.getElementById('certifications').value = document.getElementById('sim_certifications').value;
+  recomputeAll();
+  simSync();
+});
+
+/* ============================================================
+   INPUT WIRING
+   ============================================================ */
+document.querySelectorAll('input[type=range]').forEach(el=>{
+  el.addEventListener('input', ()=>{
+    const map = {cgpa:'cgpa', aptitude:'apt', communication:'comm', programming:'prog'};
+    document.getElementById('v_'+map[el.id]).textContent = el.value;
+    recomputeAll();
+  });
+});
+document.querySelectorAll('#page-dashboard input[type=number]').forEach(el=> el.addEventListener('input', recomputeAll));
+
+/* ============================================================
+   CERTIFICATE UPLOADS (10th / 12th / cert files)
+   ============================================================ */
+if(window['pdfjsLib']){ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+
+async function extractPdfText(file){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+  let text='';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it=>it.str).join(' ') + '\n';
+  }
+  return text;
+}
+function showChip(chipId, filename){ const chip=document.getElementById(chipId); chip.style.display='flex'; chip.querySelector('.name').textContent=filename; }
+function hideChip(chipId){ document.getElementById(chipId).style.display='none'; }
+
+function wireCertUpload(fileInputId, chipId, hintId, targetFieldId){
+  document.getElementById(fileInputId).addEventListener('change', async (e)=>{
+    const file = e.target.files[0];
+    const hint = document.getElementById(hintId);
+    hint.innerHTML='';
+    if(!file) return;
+    showChip(chipId, file.name);
+    if(file.type==='application/pdf'){
+      hint.textContent='Reading certificateâ€¦';
+      try{
+        const text = await extractPdfText(file);
+        const match = text.match(/(\d{1,2}\.\d{1,2}|\d{2,3})\s?%/) || text.match(/percentage[^\d]{0,10}(\d{1,3}(\.\d+)?)/i);
+        if(match){
+          const val = parseFloat(match[1]);
+          hint.innerHTML = `Detected ${val}% on the certificate. <button type="button" class="apply-mini" data-val="${val}">Apply</button>`;
+          hint.querySelector('.apply-mini').addEventListener('click', ()=>{ document.getElementById(targetFieldId).value=val; recomputeAll(); });
+        } else { hint.textContent = "Attached â€” couldn't auto-detect a percentage, please check the value above."; }
+      }catch(err){ hint.textContent='Attached â€” could not read this PDF automatically.'; }
+    } else {
+      hint.textContent='Attached as image â€” auto-reading scanned images needs OCR, not included in this demo. Confirm the % above manually.';
+    }
+  });
+  document.getElementById(chipId).querySelector('.rm').addEventListener('click', ()=>{
+    document.getElementById(fileInputId).value=''; hideChip(chipId); document.getElementById(hintId).innerHTML='';
+  });
+}
+wireCertUpload('tenthCert','tenthChip','tenthHint','tenth');
+wireCertUpload('twelfthCert','twelfthChip','twelfthHint','twelfth');
+
+let certFiles=[];
+function renderCertFileList(){
+  const list=document.getElementById('certFileList'); list.innerHTML='';
+  certFiles.forEach((f,i)=>{
+    const row=document.createElement('div'); row.className='file-chip'; row.style.display='flex';
+    row.innerHTML=`<span class="name">${f.name}</span><span class="rm" data-i="${i}">âœ•</span>`;
+    row.querySelector('.rm').addEventListener('click', ()=>{ certFiles.splice(i,1); renderCertFileList(); document.getElementById('certifications').value=certFiles.length; recomputeAll(); });
+    list.appendChild(row);
+  });
+}
+document.getElementById('certFiles').addEventListener('change',(e)=>{
+  certFiles = certFiles.concat(Array.from(e.target.files));
+  renderCertFileList();
+  document.getElementById('certifications').value = certFiles.length;
+  recomputeAll();
+  e.target.value='';
+});
+
+/* ============================================================
+   RESUME: PDF upload + scan (skills/projects estimate + ATS + missing skills)
+   ============================================================ */
+document.getElementById('resumePdf').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  const status = document.getElementById('resumePdfStatus');
+  if(!file) return;
+  showChip('resumeChip', file.name);
+  status.textContent='Reading PDFâ€¦';
+  try{
+    const text = await extractPdfText(file);
+    document.getElementById('resumeText').value = text.trim();
+    status.textContent = `Extracted ${text.trim().split(/\s+/).length} words. Running AI scanâ€¦`;
+    document.getElementById('scanBtn').click();
+  }catch(err){ status.textContent='Could not read this PDF â€” try pasting the text instead.'; }
+});
+document.getElementById('resumeChip').querySelector('.rm').addEventListener('click', ()=>{
+  document.getElementById('resumePdf').value=''; hideChip('resumeChip'); document.getElementById('resumePdfStatus').textContent='';
+});
+
+document.getElementById('scanBtn').addEventListener('click', ()=>{
+  const rawText = document.getElementById('resumeText').value;
+  const text = rawText.toLowerCase();
+  if(!text.trim()){ alert('Paste some resume text first, or upload a resume PDF above.'); return; }
+
+  const lines = rawText.split(/\n|â€¢|\r/).map(l=>l.trim()).filter(Boolean);
+  const isHeadingLine = l => l.length>0 && l.length<=90;
+  const internshipEntries = lines.filter(l=>isHeadingLine(l) && /intern/i.test(l));
+  const projectEntries = lines.filter(l=>isHeadingLine(l) && /project/i.test(l));
+  const certEntries = lines.filter(l=>isHeadingLine(l) && /certificat/i.test(l));
+  const foundSkills = SKILL_KEYWORDS.filter(k=>text.includes(k));
+  const suggestedProgramming = Math.min(10, 4+Math.round(foundSkills.length/3));
+  const suggestedProjects = Math.min(15, projectEntries.length);
+  const suggestedInternships = Math.min(6, internshipEntries.length);
+  const suggestedCerts = Math.min(10, certEntries.length);
+
+  const box = document.getElementById('detectedBox');
+  box.style.display='block';
+  box.innerHTML = `<strong style="color:var(--good);">âœ“ Auto-applied to your Dashboard profile.</strong> Detected ${foundSkills.length} skill keyword(s)${foundSkills.length?' â€” '+foundSkills.slice(0,6).join(', '):''}.
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <label style="font-size:11px;">Programming /10<input type="number" id="est_prog" value="${suggestedProgramming}" min="1" max="10" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);"></label>
+      <label style="font-size:11px;">Projects<input type="number" id="est_proj" value="${suggestedProjects}" min="0" max="15" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);"></label>
+      <label style="font-size:11px;">Internships<input type="number" id="est_intern" value="${suggestedInternships}" min="0" max="6" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);"></label>
+      <label style="font-size:11px;">Certifications<input type="number" id="est_cert" value="${suggestedCerts}" min="0" max="10" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);"></label>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin:9px 0 0;">These 4 numbers are already live on your Dashboard and Skill Gap analysis. Edit any that look off and click below to re-sync. This can't detect your CGPA, board %, aptitude, or communication skill; set those on the Dashboard.</p>
+    <button class="btn" id="applyBtn" style="margin-top:10px;width:100%;">Re-sync corrected values</button>`;
+
+  function applyEstimatesToProfile(prog, proj, intern, cert){
+    document.getElementById('programming').value=prog; document.getElementById('v_prog').textContent=prog;
+    document.getElementById('projects').value=proj; document.getElementById('internships').value=intern; document.getElementById('certifications').value=cert;
+    recomputeAll();
+  }
+  // Auto-apply immediately â€” resume scan now connects straight to the Dashboard / skill-gap analysis.
+  applyEstimatesToProfile(suggestedProgramming, suggestedProjects, suggestedInternships, suggestedCerts);
+
+  document.getElementById('applyBtn').addEventListener('click', ()=>{
+    const prog=+document.getElementById('est_prog').value, proj=+document.getElementById('est_proj').value,
+          intern=+document.getElementById('est_intern').value, cert=+document.getElementById('est_cert').value;
+    applyEstimatesToProfile(prog, proj, intern, cert);
+  });
+
+  const ats = AIEngine.computeATS(rawText);
+  document.getElementById('atsScore').textContent = ats.score;
+  const bdBox = document.getElementById('atsBreakdown');
+  bdBox.innerHTML='';
+  ats.breakdown.forEach(b=>{
+    const pct = Math.round(b.ratio*100);
+    const color = pct>=70?'#1E9E6B':pct>=40?'#B4790A':'#DC2626';
+    const row = document.createElement('div');
+    row.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${b.label}</span><span class="mono">${pct}%</span></div>
+      <div class="g-track"><div class="g-fill" style="width:${pct}%;background:${color};"></div></div>`;
+    bdBox.appendChild(row);
+  });
+
+  const topRole = STATE.roleMatches ? STATE.roleMatches[0].name : ROLES[0].name;
+  document.getElementById('missingSkillsRoleLabel').textContent = `Compared against a typical "${topRole}" skillset`;
+  const ideal = ROLE_SKILLS[topRole] || [];
+  const missing = ideal.filter(s=>!text.includes(s));
+  const msBox = document.getElementById('missingSkillsList');
+  msBox.innerHTML = missing.length
+    ? missing.map(s=>`<span class="pill bad">${s}</span>`).join('')
+    : `<span class="pill good">No obvious gaps for this role</span>`;
+
+  const sugBox = document.getElementById('resumeSuggestions');
+  sugBox.innerHTML='';
+  const suggestions = [];
+  ats.breakdown.forEach(b=>{ if(b.ratio<0.6) suggestions.push(`Improve "${b.label}" â€” currently only ${Math.round(b.ratio*100)}% strong.`); });
+  if(missing.length) suggestions.push(`Add or highlight: ${missing.slice(0,4).join(', ')} â€” these are common for your top-matched role.`);
+  if(!suggestions.length) suggestions.push('Your resume looks solid on the factors this scanner checks â€” focus on tailoring it per job description now.');
+  suggestions.forEach((s,i)=>{
+    const li=document.createElement('li'); li.className='rec-item';
+    li.innerHTML=`<span class="dot" style="background:${i===0?'#DC2626':'#5B4FE5'};width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none;"></span><span class="txt"><span>${s}</span></span>`;
+    sugBox.appendChild(li);
+  });
+
+  STATE.resumeScanned = true;
+  STATE.atsScore = ats.score;
+  renderNotifications();
+  renderInsightStrip(STATE.prob, STATE.swr, statusFor(STATE.prob));
+});
+
+/* ============================================================
+   PEER COMPARISON (needs backend)
+   ============================================================ */
+async function loadPeerStats(){
+  const box = document.getElementById('peerBox');
+  if(!backendConnected || !currentRoll){
+    box.innerHTML = '<p class="sub">Connect to the backend (cloud icon, top right) and click Save now to see how you compare.</p>';
+    return;
+  }
+  box.innerHTML = '<p class="sub">Loadingâ€¦</p>';
+  try{
+    // make sure the server has your latest probability first
+    await authedFetch('/api/students/'+encodeURIComponent(currentRoll), {
+      method:'PUT', body:JSON.stringify(profileToPayload())
+    });
+    const res = await authedFetch('/api/stats/'+encodeURIComponent(currentRoll));
+    const s = await res.json();
+    if(!res.ok || s.average==null){
+      box.innerHTML = '<p class="sub">Not enough data yet â€” peer stats appear once at least one profile has been saved.</p>';
+      return;
+    }
+    const diff = Math.round(s.my_probability - s.average);
+    box.innerHTML = `
+      <div class="grid-3">
+        <div class="rec-mini"><div><strong class="mono" style="font-size:22px;">${Math.round(s.my_probability)}%</strong><span>Your probability</span></div></div>
+        <div class="rec-mini"><div><strong class="mono" style="font-size:22px;">${s.average}%</strong><span>Average of ${s.count} student(s)</span></div></div>
+        <div class="rec-mini"><div><strong class="mono" style="font-size:22px;">${s.percentile}%</strong><span>of students at or below you</span></div></div>
+      </div>
+      <p class="sub" style="margin-top:12px;">You are ${diff>=0 ? diff+' points above' : Math.abs(diff)+' points below'} the average.</p>`;
+  }catch(e){
+    box.innerHTML = '<p class="sub">Could not reach the backend.</p>';
+  }
+}
+document.getElementById('refreshPeerBtn').addEventListener('click', loadPeerStats);
+
+/* ============================================================
+   SHAREABLE READINESS CARD (canvas â†’ PNG download)
+   ============================================================ */
+document.getElementById('downloadCardBtn').addEventListener('click', ()=>{
+  const W=1080, H=1080;
+  const canvas = document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  const ctx = canvas.getContext('2d');
+
+  const grad = ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,'#5B4FE5'); grad.addColorStop(1,'#7C6CF6');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+  // decorative circles
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.beginPath(); ctx.arc(W-80,120,180,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(70,H-100,140,0,Math.PI*2); ctx.fill();
+
+  ctx.fillStyle='#fff';
+  ctx.font='700 34px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('Runway', 70, 100);
+  ctx.font='500 20px "Plus Jakarta Sans", sans-serif';
+  ctx.globalAlpha=0.85;
+  ctx.fillText('AI Placement Readiness', 70, 132);
+  ctx.globalAlpha=1;
+
+  ctx.font='800 26px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('Placement Probability', 70, 340);
+
+  ctx.font='800 220px "JetBrains Mono", monospace';
+  ctx.fillText(Math.round(STATE.prob)+'%', 60, 560);
+
+  ctx.font='700 32px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText(STATE.statusLabel || '', 70, 610);
+
+  ctx.globalAlpha=0.9;
+  ctx.font='500 22px "Plus Jakarta Sans", sans-serif';
+  const topRole = STATE.roleMatches ? STATE.roleMatches[0] : null;
+  if(topRole) ctx.fillText('Top career match: '+topRole.name+' ('+topRole.match+'%)', 70, 700);
+  if(STATE.atsScore!=null) ctx.fillText('Resume ATS score: '+STATE.atsScore+'/100', 70, 736);
+  ctx.globalAlpha=1;
+
+  ctx.font='500 18px "Plus Jakarta Sans", sans-serif';
+  ctx.globalAlpha=0.75;
+  ctx.fillText('Generated by Runway Â· '+new Date().toLocaleDateString(), 70, H-60);
+  ctx.globalAlpha=1;
+
+  const link = document.createElement('a');
+  link.download = 'my-placement-readiness-card.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+
+/* ============================================================
+   INTERVIEW MODULE
+   ============================================================ */
+let currentQuestion = null;
+function pickQuestion(){
+  const role = STATE.roleMatches ? STATE.roleMatches[0].name : null;
+  const pool = (role && QUESTION_BANK[role]) ? QUESTION_BANK[role].concat(QUESTION_BANK.general) : QUESTION_BANK.general;
+  currentQuestion = pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('qTag').textContent = currentQuestion.tag + (role ? ' Â· '+role : '');
+  document.getElementById('qText').textContent = currentQuestion.text;
+  document.getElementById('feedbackBox').classList.remove('show');
+  document.getElementById('answerText').value='';
+}
+document.getElementById('newQBtn').addEventListener('click', pickQuestion);
+document.getElementById('getFeedbackBtn').addEventListener('click', ()=>{
+  if(!currentQuestion){ pickQuestion(); }
+  const answer = document.getElementById('answerText').value;
+  const result = AIEngine.evaluateAnswer(currentQuestion, answer);
+  document.getElementById('fbScore').textContent = result.score;
+  document.getElementById('fbList').innerHTML = result.feedback.map(f=>`<li>${f}</li>`).join('');
+  document.getElementById('feedbackBox').classList.add('show');
+});
+
+/* ---- Voice: read question aloud (speechSynthesis) ---- */
+document.getElementById('speakQBtn').addEventListener('click', ()=>{
+  if(!('speechSynthesis' in window)){
+    alert('Text-to-speech is not supported in this browser. Try Chrome or Edge.');
+    return;
+  }
+  if(!currentQuestion){ pickQuestion(); }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(currentQuestion.text);
+  utter.rate = 0.95;
+  window.speechSynthesis.speak(utter);
+});
+
+/* ---- Voice: speak your answer (SpeechRecognition) ---- */
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognizer = null;
+let isRecording = false;
+const voiceBtn = document.getElementById('voiceAnswerBtn');
+if(!SpeechRecognitionAPI){
+  const note = document.getElementById('voiceSupportNote');
+  note.style.display = 'block';
+  note.textContent = 'Voice input needs a browser with speech recognition support (Chrome or Edge work best) â€” typing still works everywhere.';
+  voiceBtn.disabled = true;
+  voiceBtn.style.opacity = '0.5';
+} else {
+  recognizer = new SpeechRecognitionAPI();
+  recognizer.continuous = true;
+  recognizer.interimResults = true;
+  recognizer.lang = 'en-IN';
+  let baseText = '';
+
+  recognizer.onresult = (event)=>{
+    let transcript = '';
+    for(let i=0;i<event.results.length;i++){ transcript += event.results[i][0].transcript; }
+    document.getElementById('answerText').value = (baseText + ' ' + transcript).trim();
+  };
+  recognizer.onerror = ()=>{ stopRecording(); };
+  recognizer.onend = ()=>{ if(isRecording) stopRecording(); };
+
+  function startRecording(){
+    baseText = document.getElementById('answerText').value;
+    try{ recognizer.start(); }catch(e){ return; }
+    isRecording = true;
+    voiceBtn.textContent = 'â¹ Stop recording';
+    voiceBtn.style.borderColor = 'var(--bad)'; voiceBtn.style.color = 'var(--bad)';
+  }
+  function stopRecording(){
+    try{ recognizer.stop(); }catch(e){}
+    isRecording = false;
+    voiceBtn.textContent = 'ðŸŽ¤ Speak your answer';
+    voiceBtn.style.borderColor = ''; voiceBtn.style.color = '';
+  }
+  voiceBtn.addEventListener('click', ()=>{ isRecording ? stopRecording() : startRecording(); });
+}
+
+/* ============================================================
+   ANALYTICS: snapshot logging
+   ============================================================ */
+document.getElementById('logSnapBtn').addEventListener('click', ()=>{
+  const entry = {date:new Date().toLocaleDateString(), prob:Math.round(STATE.prob)};
+  const snaps = loadSnapshots();
+  snaps.push(entry);
+  saveSnapshots(snaps);
+  STATE.snapshots = snaps;
+  renderAnalytics();
+  if(backendConnected && currentRoll){
+    authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/snapshots', {
+      method:'POST', body:JSON.stringify(entry)
+    }).catch(()=>{ /* stays saved locally even if the backend push fails */ });
+  }
+});
+document.getElementById('clearSnapBtn').addEventListener('click', ()=>{
+  saveSnapshots([]); STATE.snapshots=[]; renderAnalytics();
+  if(backendConnected && currentRoll){
+    authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/snapshots', {method:'DELETE'}).catch(()=>{});
+  }
+});
+
+/* ============================================================
+   CHATBOT
+   ============================================================ */
+function addChatMsg(who, text){
+  const body=document.getElementById('chatBody');
+  const div=document.createElement('div'); div.className='chat-msg '+who; div.textContent=text;
+  body.appendChild(div); body.scrollTop=body.scrollHeight;
+}
+function setChatBusy(busy){
+  const input=document.getElementById('chatInput'), button=document.getElementById('chatSendBtn'), box=document.getElementById('chatBody');
+  input.disabled=busy; button.disabled=busy; button.textContent=busy?'…':'Send';
+  const old=document.getElementById('chatTyping'); if(old) old.remove();
+  if(busy){const typing=document.createElement('div');typing.id='chatTyping';typing.className='chat-msg bot typing';typing.setAttribute('aria-label','Assistant is thinking');typing.innerHTML='<i class="typing-dot"></i><i class="typing-dot"></i><i class="typing-dot"></i>';box.appendChild(typing);box.scrollTop=box.scrollHeight;}
+}
+function renderChatSuggestions(){
+  const box=document.getElementById('chatSuggest');
+  const suggestions=['What should I learn next?','Why is my score low?','Suggest a project for me','Help me prepare for interviews'];
+  box.innerHTML='';
+  suggestions.forEach(s=>{
+    const b=document.createElement('button'); b.textContent=s;
+    b.addEventListener('click', ()=>handleChatQuery(s));
+    box.appendChild(b);
+  });
+}
+function buildChatContext(){
+  return {
+    placement_probability: Math.round(STATE.prob),
+    status: STATE.statusLabel,
+    strengths: (STATE.swr.strongKeys||[]).map(k=>NAME_MAP[k]),
+    weak_areas: (STATE.swr.weakKeys||[]).map(k=>NAME_MAP[k]),
+    top_career_matches: (STATE.roleMatches||[]).slice(0,3),
+    company_tier_readiness: (STATE.companyReadiness||[]).map(c=>({tier:c.name, score:c.score})),
+    resume_ats_score: STATE.atsScore,
+    roadmap_month_1: STATE.roadmap ? STATE.roadmap[0].items[0] : null
+  };
+}
+
+async function handleChatQuery(q){
+  q=q.trim().slice(0,300); if(!q || document.getElementById('chatSendBtn').disabled) return;
+  addChatMsg('user', q); setChatBusy(true);
+  try{
+  if(backendConnected){
+    try{
+      const res = await authedFetch('/api/chat', {
+        method:'POST',
+        body: JSON.stringify({message:q, context: buildChatContext()})
+      });
+      const data = await res.json();
+      if(res.ok && data.reply){ addChatMsg('bot', data.reply); return; }
+      // Backend reachable but AI call failed (e.g. no API key set) â€” fall
+      // back to the rule-based engine rather than showing a raw error.
+    }catch(e){ /* backend unreachable for this call â€” fall back below */ }
+  }
+    const resp = AIEngine.chatbotRespond(q, STATE);
+    await new Promise(resolve=>setTimeout(resolve,260)); addChatMsg('bot', resp);
+  }finally{ setChatBusy(false); }
+}
+document.getElementById('chatFab').addEventListener('click', ()=>{
+  const panel=document.getElementById('chatPanel'); panel.classList.toggle('open');
+  document.getElementById('chatHeadSub').textContent=backendConnected?'Connected assistant · uses your current profile':'Profile-aware guidance · local demo mode';
+  if(panel.classList.contains('open')) setTimeout(()=>document.getElementById('chatInput').focus(),80);
+  if(document.getElementById('chatBody').children.length===0){
+    const intro = backendConnected
+      ? `Hi! I can use your current profile to help with placement prep. Your readiness estimate is ${Math.round(STATE.prob)}%. Ask for a next step, a project idea, or interview practice. This is guidance, not a hiring decision.`
+      : `Hi! I can use your current profile to suggest placement-prep next steps. Your readiness estimate is ${Math.round(STATE.prob)}%. Ask about your score, projects, skills, or interview practice. This demo assistant uses local guidance rules.`;
+    addChatMsg('bot', intro);
+    renderChatSuggestions();
+  }
+});
+document.getElementById('chatClose').addEventListener('click', ()=>document.getElementById('chatPanel').classList.remove('open'));
+document.getElementById('chatSendBtn').addEventListener('click', ()=>{
+  const input=document.getElementById('chatInput'); const val=input.value.trim();
+  if(!val) return; input.value=''; handleChatQuery(val);
+});
+document.getElementById('chatInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') document.getElementById('chatSendBtn').click(); });
+
+/* ============================================================
+   SAMPLE DATA + REPORT
+   ============================================================ */
+document.getElementById('sampleBtn').addEventListener('click', ()=>{
+  const sample={cgpa:8.4, tenth:88, twelfth:85, aptitude:78, communication:8, programming:8, projects:4, internships:1, certifications:3};
+  Object.keys(sample).forEach(k=>{ document.getElementById(k).value=sample[k]; });
+  document.getElementById('v_cgpa').textContent=sample.cgpa;
+  document.getElementById('v_apt').textContent=sample.aptitude;
+  document.getElementById('v_comm').textContent=sample.communication;
+  document.getElementById('v_prog').textContent=sample.programming;
+  recomputeAll();
+});
+
+document.getElementById('reportBtn').addEventListener('click', generateReportPDF);
+function generateReportPDF(){
+  if(!window.jspdf){ alert('PDF library did not load â€” check your internet connection and try again.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+  const pageH = doc.internal.pageSize.getHeight();
+  const marginX=40, maxW=515; let y=50;
+  function ensureSpace(h){ if(y+h>pageH-40){ doc.addPage(); y=50; } }
+  function heading(text){ ensureSpace(28); doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(20,20,43);
+    doc.text(text, marginX, y); y+=20; doc.setDrawColor(91,79,229); doc.setLineWidth(1); doc.line(marginX,y-12,marginX+maxW,y-12); }
+  function para(text,size=10.5,color=[60,60,60],bold=false){ doc.setFont('helvetica',bold?'bold':'normal'); doc.setFontSize(size); doc.setTextColor(...color);
+    doc.splitTextToSize(text,maxW).forEach(line=>{ ensureSpace(size+4); doc.text(line,marginX,y); y+=size+4; }); }
+  function bullet(text){ ensureSpace(14); doc.setFont('helvetica','normal'); doc.setFontSize(10.5); doc.setTextColor(60,60,60);
+    doc.splitTextToSize('â€¢  '+text, maxW-10).forEach((line,i)=>{ ensureSpace(14); doc.text(line, marginX+(i===0?0:10), y); y+=14; }); }
+
+  const d=STATE.d, prob=STATE.prob, scores=STATE.scores;
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(20,20,43);
+  doc.text('AI Placement Readiness Report', marginX, y); y+=16;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(120,120,120);
+  doc.text('Generated by Runway Â· '+new Date().toLocaleDateString(), marginX, y); y+=26;
+
+  heading('Overall readiness estimate');
+  para(`${Math.round(prob)}%  â€”  ${STATE.statusLabel}`, 22, [20,20,43], true);
+  y+=6;
+  if(radar){ try{ const img=radar.toBase64Image(); ensureSpace(220); doc.addImage(img,'PNG',marginX,y,260,200);
+    doc.setFontSize(9); doc.setTextColor(120,120,120); doc.text('Academic / Technical / Aptitude / Experience balance', marginX, y+215); y+=235; }catch(e){} }
+
+  heading('Student profile snapshot');
+  [`CGPA: ${d.cgpa}/10`,`10th %: ${d.tenth}`,`12th %: ${d.twelfth}`,`Aptitude: ${d.aptitude}/100`,`Communication: ${d.communication}/10`,
+   `Programming: ${d.programming}/10`,`Projects: ${d.projects}`,`Internships: ${d.internships}`,`Certifications: ${d.certifications}`,`Backlogs: ${d.backlogs}`]
+   .forEach(s=>bullet(s));
+  y+=4;
+
+  heading('Category scores'); Object.keys(scores).forEach(k=>bullet(`${k}: ${Math.round(scores[k])}/100`)); y+=4;
+  heading('Career path recommender'); STATE.roleMatches.forEach(r=>bullet(`${r.name} â€” ${r.match}% match`)); y+=4;
+  heading('Company tier readiness'); STATE.companyReadiness.forEach(t=>bullet(`${t.name}: ${t.score}%${t.weakest.length? ' â€” needs '+t.weakest[0].name : ''}`)); y+=4;
+  if(STATE.atsScore!=null){ heading('Resume ATS score'); para(`${STATE.atsScore}/100`, 16, [20,20,43], true); y+=4; }
+
+  heading('Strengths & weak spots');
+  para('Strengths:', 10.5, [30,158,107], true);
+  (STATE.swr.strongKeys.length?STATE.swr.strongKeys:['â€”']).forEach(k=>bullet(NAME_MAP[k]||k));
+  para('Needs attention:', 10.5, [220,38,38], true);
+  (STATE.swr.weakKeys.length?STATE.swr.weakKeys:['â€”']).forEach(k=>bullet(NAME_MAP[k]||k));
+  y+=4;
+
+  heading('Monthly roadmap');
+  STATE.roadmap.forEach(p=>{ para(`${p.title} â€” ${p.sub}`, 11, [20,20,43], true); p.items.forEach(it=>bullet(it)); y+=2; });
+
+  doc.save('placement_readiness_report.pdf');
+}
+
+/* ============================================================
+   JD MATCHER + JOBS + APPLICATION TRACKER
+   ============================================================ */
+function analyzeJD(jdRaw){
+  const jd = jdRaw.toLowerCase();
+  const jdSkills = SKILL_KEYWORDS.filter(k=>jd.includes(k));
+  const resumeText = (document.getElementById('resumeText').value||'').toLowerCase();
+  const resumeScanned = !!resumeText.trim();
+  const haveSkills = jdSkills.filter(k=>resumeText.includes(k));
+  const missing = jdSkills.filter(k=>!resumeText.includes(k));
+  const matchPct = jdSkills.length ? Math.round((haveSkills.length/jdSkills.length)*100) : null;
+  return {jdSkills, haveSkills, missing, matchPct, resumeScanned};
+}
+
+document.getElementById('analyzeJdBtn').addEventListener('click', ()=>{
+  const jd = document.getElementById('jdText').value;
+  const box = document.getElementById('jdResult');
+  if(!jd.trim()){ box.innerHTML = '<p class="sub">Paste a job description first.</p>'; return; }
+  const r = analyzeJD(jd);
+  if(!r.resumeScanned){
+    box.innerHTML = '<p class="sub">Scan your resume on the Resume tab first for an accurate match â€” showing detected JD skills only.</p>'
+      + (r.jdSkills.length ? r.jdSkills.map(s=>`<span class="pill indigo" style="margin:4px 4px 0 0;display:inline-flex;">${s}</span>`).join('') : '<p class="sub">No common skill keywords detected in this JD.</p>');
+    return;
+  }
+  const color = r.matchPct>=70 ? 'var(--good)' : r.matchPct>=40 ? 'var(--warn)' : 'var(--bad)';
+  box.innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+      <span class="mono" style="font-size:32px;font-weight:800;color:${color};">${r.matchPct==null?'â€”':r.matchPct+'%'}</span>
+      <span class="sub">keyword match with your resume</span>
+    </div>
+    ${r.haveSkills.length?`<p class="sub" style="margin-bottom:6px;">You have: `+r.haveSkills.map(s=>`<span class="pill good" style="margin:2px;">${s}</span>`).join('')+`</p>`:''}
+    ${r.missing.length?`<p class="sub">Missing: `+r.missing.map(s=>`<span class="pill bad" style="margin:2px;">${s}</span>`).join('')+`</p>`:'<p class="sub">No obvious gaps detected for this JD.</p>'}
+  `;
+});
+
+async function loadJobs(){
+  const box = document.getElementById('jobList');
+  if(!box) return;
+  if(!backendConnected){ box.innerHTML = '<p class="sub">Log in (cloud icon, top right) to see postings from your placement cell.</p>'; return; }
+  try{
+    const res = await authedFetch('/api/jobs');
+    const jobs = await res.json();
+    if(!res.ok || !jobs.length){ box.innerHTML = '<p class="sub">No postings yet.</p>'; return; }
+    box.innerHTML = jobs.map(j=>`
+      <div class="job-row">
+        <div class="jr-head"><strong>${j.company} â€” ${j.role}</strong><span>${new Date(j.created_at).toLocaleDateString()}</span></div>
+        <p>${(j.description||'').slice(0,220)}${(j.description||'').length>220?'â€¦':''}</p>
+        <div class="jr-actions">
+          <button class="btn" data-jd="${encodeURIComponent(j.description||'')}" onclick="document.getElementById('jdText').value=decodeURIComponent(this.dataset.jd);document.getElementById('analyzeJdBtn').click();">Analyze match</button>
+          <button class="btn primary" onclick="quickAddApplication('${j.company.replace(/'/g,"\\\\'")}','${(j.role||'').replace(/'/g,"\\\\'")}')">Add to tracker</button>
+        </div>
+      </div>`).join('');
+  }catch(e){ box.innerHTML = '<p class="sub">Could not load postings.</p>'; }
+}
+
+/* ---- application tracker ---- */
+let applications = [];
+async function loadApplications(){
+  if(!backendConnected) { applications = []; renderKanban(); return; }
+  try{
+    const res = await authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/applications');
+    applications = res.ok ? await res.json() : [];
+  }catch(e){ applications = []; }
+  renderKanban();
+}
+function renderKanban(){
+  const board = document.getElementById('kanbanBoard');
+  if(!board) return;
+  const stages = ['Wishlist','Applied','Interview','Offer','Rejected'];
+  board.innerHTML = stages.map(stage=>{
+    const cards = applications.filter(a=>a.stage===stage).map(a=>{
+      const idx = stages.indexOf(stage);
+      return `<div class="app-card">
+        <div class="ac-top"><div><strong>${a.company}</strong><span>${a.role||''}</span></div><button class="ac-del" onclick="deleteApplication(${a.id})">âœ•</button></div>
+        <div class="ac-move">
+          ${idx>0?`<button onclick="moveApplication(${a.id},'${stages[idx-1]}')">â† ${stages[idx-1]}</button>`:''}
+          ${idx<stages.length-1?`<button onclick="moveApplication(${a.id},'${stages[idx+1]}')">${stages[idx+1]} â†’</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="kanban-col"><h4>${stage} (${applications.filter(a=>a.stage===stage).length})</h4>${cards||'<p class="sub" style="font-size:11px;">Empty</p>'}</div>`;
+  }).join('');
+}
+async function quickAddApplication(company, role){
+  if(!backendConnected){ alert('Log in first (cloud icon, top right).'); return; }
+  const res = await authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/applications', {
+    method:'POST', body: JSON.stringify({company, role})
+  });
+  if(res.ok){ applications.push(await res.json()); renderKanban(); }
+}
+async function moveApplication(id, stage){
+  const res = await authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/applications/'+id, {
+    method:'PUT', body: JSON.stringify({stage})
+  });
+  if(res.ok){ const updated = await res.json(); applications = applications.map(a=>a.id===id?updated:a); renderKanban(); }
+}
+async function deleteApplication(id){
+  const res = await authedFetch('/api/students/'+encodeURIComponent(currentRoll)+'/applications/'+id, {method:'DELETE'});
+  if(res.ok){ applications = applications.filter(a=>a.id!==id); renderKanban(); }
+}
+document.getElementById('addAppBtn').addEventListener('click', ()=>{
+  const company = document.getElementById('trackCompany').value.trim();
+  const role = document.getElementById('trackRole').value.trim();
+  if(!company){ alert('Enter a company name.'); return; }
+  quickAddApplication(company, role);
+  document.getElementById('trackCompany').value=''; document.getElementById('trackRole').value='';
+});
+
+/* ============================================================
+   TESTS â€” timed aptitude quiz
+   ============================================================ */
+const QUIZ_BANK = [
+  {q:'If a train travels 60 km in 45 minutes, what is its speed in km/h?', opts:['70','80','75','90'], a:2},
+  {q:'Find the next number: 2, 6, 12, 20, 30, ?', opts:['40','42','36','44'], a:1},
+  {q:'A shopkeeper marks an item 25% above cost and gives a 10% discount. What is his profit %?', opts:['12.5%','15%','10%','20%'], a:0},
+  {q:'If CODING is written as DPEJOH, how is FLOWER written?', opts:['GMPXFS','GMPXES','FMPXFS','GMPXFR'], a:0},
+  {q:'What comes next: 1, 4, 9, 16, 25, ?', opts:['30','36','32','35'], a:1},
+  {q:'A can do a job in 10 days, B in 15 days. Working together, how many days?', opts:['6','5','7','8'], a:0},
+  {q:'Pointer arithmetic aside, what is the time complexity of binary search?', opts:['O(n)','O(n log n)','O(log n)','O(1)'], a:2},
+  {q:'Which data structure uses FIFO order?', opts:['Stack','Queue','Tree','Graph'], a:1},
+  {q:'If 5 machines make 5 devices in 5 minutes, how long for 100 machines to make 100 devices?', opts:['100 min','20 min','5 min','1 min'], a:2},
+  {q:'Odd one out: Circle, Square, Triangle, Sphere', opts:['Circle','Square','Triangle','Sphere'], a:3},
+];
+let quizIdx = 0, quizScore = 0, quizTimerId = null, quizSecondsLeft = 300;
+function startQuiz(){
+  quizIdx=0; quizScore=0; quizSecondsLeft=300;
+  document.getElementById('quizIntro').style.display='none';
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='block';
+  renderQuizQuestion();
+  clearInterval(quizTimerId);
+  quizTimerId = setInterval(()=>{
+    quizSecondsLeft--;
+    const m = Math.floor(quizSecondsLeft/60), sec = quizSecondsLeft%60;
+    document.getElementById('quizTimer').textContent = m+':'+(sec<10?'0':'')+sec;
+    if(quizSecondsLeft<=0){ clearInterval(quizTimerId); finishQuiz(); }
+  }, 1000);
+}
+function renderQuizQuestion(){
+  const q = QUIZ_BANK[quizIdx];
+  document.getElementById('quizProgress').textContent = `Question ${quizIdx+1} of ${QUIZ_BANK.length}`;
+  document.getElementById('quizQuestion').innerHTML = `<div class="quiz-q"><p class="qtext">${q.q}</p>` +
+    q.opts.map((o,i)=>`<label><input type="radio" name="quizOpt" value="${i}" style="margin-right:8px;">${o}</label>`).join('') + `</div>`;
+}
+document.getElementById('quizNextBtn').addEventListener('click', ()=>{
+  const picked = document.querySelector('input[name="quizOpt"]:checked');
+  if(picked && +picked.value === QUIZ_BANK[quizIdx].a) quizScore++;
+  quizIdx++;
+  if(quizIdx >= QUIZ_BANK.length){ clearInterval(quizTimerId); finishQuiz(); }
+  else renderQuizQuestion();
+});
+function finishQuiz(){
+  document.getElementById('quizArea').style.display='none';
+  const pct = Math.round((quizScore/QUIZ_BANK.length)*100);
+  document.getElementById('quizResult').style.display='block';
+  document.getElementById('quizResult').innerHTML = `
+    <div style="text-align:center;padding:20px;">
+      <div class="mono" style="font-size:42px;font-weight:800;color:var(--indigo);">${quizScore}/${QUIZ_BANK.length}</div>
+      <p class="sub">That's ${pct}% â€” this can replace your self-rated Aptitude score on the Dashboard.</p>
+      <button class="btn primary" id="applyQuizBtn" style="margin-top:10px;">Apply ${pct}% to my Aptitude score</button>
+      <button class="btn" id="retakeQuizBtn" style="margin-top:10px;">Retake test</button>
+    </div>`;
+  document.getElementById('applyQuizBtn').addEventListener('click', ()=>{
+    document.getElementById('aptitude').value = pct;
+    document.getElementById('v_apt').textContent = pct;
+    STATE.tests = Object.assign({}, STATE.tests, {aptitude_test_score: pct, aptitude_test_date: new Date().toISOString()});
+    recomputeAll();
+  });
+  document.getElementById('retakeQuizBtn').addEventListener('click', ()=>{
+    document.getElementById('quizResult').style.display='none';
+    document.getElementById('quizIntro').style.display='block';
+  });
+}
+document.getElementById('startQuizBtn').addEventListener('click', startQuiz);
+
+/* ============================================================
+   PORTFOLIO
+   ============================================================ */
+STATE.portfolio = STATE.portfolio || [];
+function renderPortfolio(){
+  const box = document.getElementById('portfolioList');
+  if(!box) return;
+  const items = STATE.portfolio || [];
+  box.innerHTML = items.length ? items.map((p,i)=>`
+    <div class="portfolio-card">
+      <div style="display:flex;justify-content:space-between;"><h4>${p.title}</h4><button class="ac-del" onclick="removePortfolioItem(${i})">âœ•</button></div>
+      <p>${p.description||''}</p>
+      ${p.link?`<a href="${p.link}" target="_blank" rel="noopener">${p.link}</a>`:''}
+    </div>`).join('') : '<p class="sub">No projects added yet.</p>';
+}
+document.getElementById('addPortfolioBtn').addEventListener('click', ()=>{
+  const title = document.getElementById('pfTitle').value.trim();
+  const desc = document.getElementById('pfDesc').value.trim();
+  const link = document.getElementById('pfLink').value.trim();
+  if(!title){ alert('Give the project a title.'); return; }
+  STATE.portfolio = (STATE.portfolio||[]).concat([{title, description:desc, link}]);
+  document.getElementById('pfTitle').value=''; document.getElementById('pfDesc').value=''; document.getElementById('pfLink').value='';
+  renderPortfolio();
+  if(backendConnected){ authedFetch('/api/students/'+encodeURIComponent(currentRoll), {method:'PUT', body:JSON.stringify({portfolio: STATE.portfolio})}).catch(()=>{}); }
+});
+function removePortfolioItem(i){
+  STATE.portfolio.splice(i,1);
+  renderPortfolio();
+  if(backendConnected){ authedFetch('/api/students/'+encodeURIComponent(currentRoll), {method:'PUT', body:JSON.stringify({portfolio: STATE.portfolio})}).catch(()=>{}); }
+}
+
+/* ============================================================
+   TPO CONSOLE (separate admin password, not a student session)
+   ============================================================ */
+let tpoAdminPassword = null;
+document.getElementById('tpoUnlockBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('tpoBackendUrl').value.trim().replace(/\/$/,'');
+  const pw = document.getElementById('tpoPassword').value;
+  const status = document.getElementById('tpoStatus');
+  status.textContent = 'Checkingâ€¦';
+  try{
+    const res = await apiFetch(url+'/api/admin/students', {headers:{'X-Admin-Password':pw}});
+    if(!res.ok){ status.textContent = 'Wrong admin password.'; return; }
+    tpoAdminPassword = pw;
+    document.getElementById('tpoContent').style.display='block';
+    status.textContent = 'Unlocked.';
+    loadTpoStudents(url, pw);
+    loadTpoJobs(url, pw);
+  }catch(e){ status.textContent = 'Could not reach the backend.'; }
+});
+async function loadTpoStudents(url, pw){
+  const res = await apiFetch(url+'/api/admin/students', {headers:{'X-Admin-Password':pw}});
+  const rows = res.ok ? await res.json() : [];
+  const table = document.getElementById('tpoTable');
+  table.innerHTML = '<tr><th>Roll</th><th>Name</th><th>CGPA</th><th>Programming</th><th>Aptitude</th><th>ATS</th><th>Probability</th></tr>' +
+    rows.map(r=>`<tr><td>${r.roll_number}</td><td>${r.name||'â€”'}</td><td>${r.cgpa??'â€”'}</td><td>${r.programming??'â€”'}</td><td>${r.aptitude??'â€”'}</td><td>${r.ats_score??'â€”'}</td><td>${r.prob!=null?Math.round(r.prob)+'%':'â€”'}</td></tr>`).join('');
+}
+async function loadTpoJobs(url, pw){
+  const res = await apiFetch(url+'/api/admin/jobs', {headers:{'X-Admin-Password':pw}});
+  const jobs = res.ok ? await res.json() : [];
+  document.getElementById('tpoJobList').innerHTML = jobs.length ? jobs.map(j=>`
+    <div class="job-row"><div class="jr-head"><strong>${j.company} â€” ${j.role}</strong>
+    <button class="ac-del" onclick="deleteTpoJob(${j.id})">âœ•</button></div><p>${(j.description||'').slice(0,150)}</p></div>`).join('')
+    : '<p class="sub">No postings yet.</p>';
+}
+document.getElementById('tpoPostJobBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('tpoBackendUrl').value.trim().replace(/\/$/,'');
+  const company = document.getElementById('tpoJobCompany').value.trim();
+  const role = document.getElementById('tpoJobRole').value.trim();
+  const description = document.getElementById('tpoJobDesc').value.trim();
+  if(!company || !role){ alert('Company and role are required.'); return; }
+  const res = await apiFetch(url+'/api/admin/jobs', {
+    method:'POST', headers:{'Content-Type':'application/json','X-Admin-Password':tpoAdminPassword},
+    body: JSON.stringify({company, role, description})
+  });
+  if(res.ok){
+    document.getElementById('tpoJobCompany').value=''; document.getElementById('tpoJobRole').value=''; document.getElementById('tpoJobDesc').value='';
+    loadTpoJobs(url, tpoAdminPassword);
+  }
+});
+async function deleteTpoJob(id){
+  const url = document.getElementById('tpoBackendUrl').value.trim().replace(/\/$/,'');
+  await apiFetch(url+'/api/admin/jobs/'+id, {method:'DELETE', headers:{'X-Admin-Password':tpoAdminPassword}});
+  loadTpoJobs(url, tpoAdminPassword);
+}
+
+/* ============================================================
+   AI: real Claude review for interview answers + company insight
+   ============================================================ */
+(function addAiButtonsIfBackend(){
+  // Real-AI interview review button, appended next to the heuristic one.
+  const feedbackBtnRow = document.getElementById('getFeedbackBtn');
+  if(feedbackBtnRow && feedbackBtnRow.parentElement){
+    const aiBtn = document.createElement('button');
+    aiBtn.className = 'btn'; aiBtn.textContent = 'âœ¦ Get real AI review';
+    aiBtn.style.marginLeft = '10px';
+    aiBtn.addEventListener('click', async ()=>{
+      if(!backendConnected){ alert('Log in via the cloud icon first, and set an ANTHROPIC_API_KEY on the backend.'); return; }
+      if(!currentQuestion){ pickQuestion(); }
+      const answer = document.getElementById('answerText').value;
+      aiBtn.textContent = 'Thinkingâ€¦'; aiBtn.disabled = true;
+      try{
+        const res = await authedFetch('/api/evaluate-answer', {method:'POST', body: JSON.stringify({question: currentQuestion.text, answer})});
+        const data = await res.json();
+        const box = document.getElementById('feedbackBox');
+        box.classList.add('show');
+        box.innerHTML = (data.reply ? `<p style="font-size:13px;color:var(--ink);white-space:pre-wrap;">${data.reply}</p>` : `<p class="sub">${data.error||'Could not get a review.'}</p>`);
+      }catch(e){ alert('Could not reach the backend.'); }
+      aiBtn.textContent = 'âœ¦ Get real AI review'; aiBtn.disabled = false;
+    });
+    feedbackBtnRow.parentElement.appendChild(aiBtn);
+  }
+
+  // Ask-AI-about-a-company mini box on the Jobs page.
+  const jobsCard = document.getElementById('jobList');
+  if(jobsCard && jobsCard.parentElement){
+    const wrap = document.createElement('div');
+    wrap.style.marginTop = '14px';
+    wrap.innerHTML = `<div style="display:flex;gap:8px;">
+        <input type="text" id="companyInsightInput" placeholder="Ask AI about a company, e.g. Infosys" style="flex:1;background:#FAFAFE;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;">
+        <button class="btn" id="companyInsightBtn">âœ¦ Get AI insight</button>
+      </div><div id="companyInsightResult" style="margin-top:10px;"></div>`;
+    jobsCard.parentElement.appendChild(wrap);
+    document.getElementById('companyInsightBtn').addEventListener('click', async ()=>{
+      const company = document.getElementById('companyInsightInput').value.trim();
+      const out = document.getElementById('companyInsightResult');
+      if(!company){ return; }
+      if(!backendConnected){ out.innerHTML = '<p class="sub">Log in via the cloud icon first, and set an ANTHROPIC_API_KEY on the backend.</p>'; return; }
+      out.innerHTML = '<p class="sub">Thinkingâ€¦</p>';
+      try{
+        const res = await authedFetch('/api/company-insight', {method:'POST', body: JSON.stringify({company, context: buildChatContext()})});
+        const data = await res.json();
+        out.innerHTML = data.reply ? `<div class="card" style="margin:0;padding:14px;"><p style="font-size:13px;white-space:pre-wrap;">${data.reply}</p></div>` : `<p class="sub">${data.error||'Could not fetch insight.'}</p>`;
+      }catch(e){ out.innerHTML = '<p class="sub">Could not reach the backend.</p>'; }
+    });
+  }
+})();
+
+/* init */
+const prepChecks = [...document.querySelectorAll('.prep-check')];
+let savedPrep = {};
+try { savedPrep = JSON.parse(localStorage.getItem('runway-third-year-checklist') || '{}') || {}; } catch (_) { localStorage.removeItem('runway-third-year-checklist'); }
+function updatePrepProgress(){
+  const done = prepChecks.filter(box => box.checked).length;
+  document.getElementById('prepProgress').textContent = done + ' of ' + prepChecks.length + ' done';
+  localStorage.setItem('runway-third-year-checklist', JSON.stringify(Object.fromEntries(prepChecks.map(box => [box.value, box.checked]))));
+}
+prepChecks.forEach(box => { box.checked = !!savedPrep[box.value]; box.addEventListener('change', updatePrepProgress); });
+updatePrepProgress();
+STATE.snapshots = loadSnapshots();
+STATE.portfolio = [];
+STATE.tests = {};
+recomputeAll();
+renderPortfolio();
+
+/* ---------- Trained ML model (scikit-learn, served by Flask) ---------- */
+async function loadMLInfo(){
+  const body = document.getElementById('mlBody');
+  try{
+    const res = await apiFetch(currentBackendUrl() + '/api/ml-info');
+    const info = await res.json();
+    if(!info.trained){
+      body.textContent = 'No trained model found. Run ml/train_model.py with your dataset, then restart the backend.';
+      return null;
+    }
+    const b = info.best, cm = info.confusion_matrix;
+    document.getElementById('engineLabel').textContent = 'Profile score: rules + ' + info.best_model;
+    body.innerHTML = '<b>' + info.best_model + '</b> &middot; ' + info.n_train + ' train / ' + info.n_test + ' test rows' +
+      (info.data_source === 'synthetic' ? ' <span class="pill indigo">synthetic demo data</span>' : '') + '<br>' +
+      'Accuracy ' + (b.Accuracy*100).toFixed(1) + '% &middot; Precision ' + (b.Precision*100).toFixed(1) + '% &middot; Recall ' +
+      (b.Recall*100).toFixed(1) + '% &middot; F1 ' + (b.F1*100).toFixed(1) + '%<br>' +
+      'Confusion matrix (test): TN ' + cm.tn + ', FP ' + cm.fp + ', FN ' + cm.fn + ', TP ' + cm.tp;
+    return info;
+  }catch(e){
+    body.textContent = 'Backend not reachable \u2014 start it with python app.py to use the trained model.';
+    return null;
+  }
+}
+document.getElementById('mlRunBtn').addEventListener('click', async ()=>{
+  const info = await loadMLInfo();
+  if(!info) return;
+  try{
+    const res = await apiFetch(currentBackendUrl() + '/api/ml-predict', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(readInputs())
+    });
+    const out = await res.json();
+    if(!res.ok){ document.getElementById('mlBody').textContent = out.error || 'Prediction failed.'; return; }
+    document.getElementById('mlBody').innerHTML += '<hr style="border:none;border-top:1px solid var(--line);margin:10px 0;">' +
+      '<b>ML model estimate: ' + out.probability + '%</b>' + (out.data_source === 'synthetic' ? ' <span class="pill indigo">synthetic demo</span>' : '') + ' &nbsp;vs&nbsp; readiness guide: ' + Math.round(STATE.prob) + '%' +
+      (out.expected_salary ? '<br>Expected package if placed (' + out.salary_model + '): <b>' + out.expected_salary.toLocaleString() + ' ' + (out.salary_unit || '') + '</b>' : '');
+  }catch(e){
+    document.getElementById('mlBody').textContent = 'Could not run the model (backend unreachable).';
+  }
+});
+setTimeout(loadMLInfo, 600);
+
+/* ---------- ML Lab page ---------- */
+let mlLabLoaded = false;
+const FEATURE_LABELS = {cgpa:'CGPA', tenth:'10th %', twelfth:'12th %', aptitude:'Aptitude', communication:'Communication',
+  programming:'Programming', projects:'Projects', internships:'Internships', certifications:'Certifications', backlogs:'Backlogs',
+  ssc_p:'10th %', hsc_p:'12th %', degree_p:'Degree %', etest_p:'Employability test', workex:'Work experience'};
+const fl = k => FEATURE_LABELS[k] || k;
+const pct = v => (v*100).toFixed(1) + '%';
+
+async function loadMLLab(){
+  const status = document.getElementById('mlLabStatus'), body = document.getElementById('mlLabBody');
+  const base = currentBackendUrl();
+  try{
+    const res = await apiFetch(base + '/api/ml-info');
+    const info = await res.json();
+    if(!info.trained){
+      status.innerHTML = '<p class="sub" style="margin:0;">No trained model found. Run <code>python train_model.py placement_data.csv</code> in the <code>ml</code> folder and restart the backend.</p>';
+      return;
+    }
+    const b = info.best;
+    const synth = info.data_source === 'synthetic';
+    status.style.display = 'none'; body.style.display = 'block';
+    document.getElementById('mlBestName').textContent = info.best_model;
+    document.getElementById('mlBestParams').innerHTML = (synth ? '<span class="ml-banner" style="display:block;">Trained on a <b>synthetic</b> dataset of ' + info.n_total + ' students (generated by <code>ml/data/generate_dataset.py</code>) &mdash; metrics show how well the model learns that rule, not how well it predicts real students. Replace <code>placement_data.csv</code> with real records and retrain for real results.</span>' : '') +
+      info.n_total + ' records &middot; ' + info.n_train + ' train / ' + info.n_test + ' test &middot; features: ' + info.features.map(fl).join(', ') +
+      ' &middot; tuned parameters: ' + JSON.stringify(info.best_params);
+    const cards = [['Accuracy', b.Accuracy], ['Precision', b.Precision], ['Recall', b.Recall], ['F1-score', b.F1], ['ROC-AUC', b['ROC-AUC']]];
+    document.getElementById('mlMetricCards').innerHTML = cards.map(c =>
+      '<div class="ml-metric"><b>' + (c[0]==='ROC-AUC' ? c[1].toFixed(2) : pct(c[1])) + '</b><span>' + c[0] + '</span></div>').join('');
+    document.getElementById('mlCompare').innerHTML =
+      '<tr><th>Model</th><th>CV F1</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>AUC</th></tr>' +
+      info.comparison.map(r => '<tr class="' + (r.Model===info.best_model?'best':'') + '"><td>' + r.Model + (r.Model===info.best_model?' &#9733;':'') + '</td><td>' +
+        pct(r['CV F1 (5-fold, train)']) + '</td><td>' + pct(r.Accuracy) + '</td><td>' + pct(r.Precision) + '</td><td>' + pct(r.Recall) +
+        '</td><td>' + pct(r.F1) + '</td><td>' + r['ROC-AUC'].toFixed(2) + '</td></tr>').join('');
+    const imageVersion = Date.now();
+    document.getElementById('imgCM').src = base + '/api/ml-image/confusion_matrix.png?v=' + imageVersion;
+    document.getElementById('imgROC').src = base + '/api/ml-image/roc_curves.png?v=' + imageVersion;
+    document.getElementById('imgFI').src = base + '/api/ml-image/feature_importance.png?v=' + imageVersion;
+    document.getElementById('imgCorr').src = base + '/api/ml-image/eda_correlation.png?v=' + imageVersion;
+    const sal = document.getElementById('mlSalaryCard');
+    if(info.salary){
+      sal.innerHTML = '<h3>Salary regression: ' + info.salary.best_model + '</h3><p class="sub">Placed students only (' + info.salary.n_train + ' train / ' + info.salary.n_test + ' test), unit: ' + info.salary.unit + '</p>' +
+        '<table class="ml-table"><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>R&sup2;</th></tr>' +
+        info.salary.comparison.map(r => '<tr><td>' + r.Model + '</td><td>' + r.MAE + '</td><td>' + r.RMSE + '</td><td>' + r.R2.toFixed(2) + '</td></tr>').join('') + '</table>';
+    } else { sal.style.display = 'none'; }
+    mlLabLoaded = true;
+  }catch(e){
+    status.innerHTML = '<p class="sub" style="margin:0;">Backend not reachable &mdash; start it with <code>python app.py</code> (see the cloud-sync panel for the URL).</p>';
+  }
+}
+
+const mlTrainBtn = document.getElementById('mlTrainBtn');
+const mlTrainLog = document.getElementById('mlTrainLog');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+mlTrainBtn.addEventListener('click', async ()=>{
+  mlTrainBtn.disabled = true;
+  mlTrainLog.textContent = 'Starting training from ml/placement_data.csv...\n';
+  try{
+    const base = currentBackendUrl();
+    const start = await fetch(base + '/api/ml-train', {method:'POST'});
+    const started = await start.json();
+    if(!start.ok) throw new Error(started.error || 'Could not start training.');
+    let status;
+    do{
+      await sleep(900);
+      const res = await fetch(base + '/api/ml-train-status', {cache:'no-store'});
+      status = await res.json();
+      mlTrainLog.textContent = status.log || status.message || 'Training...';
+      mlTrainLog.scrollTop = mlTrainLog.scrollHeight;
+    }while(status.running);
+    if(!status.success) throw new Error(status.message || 'Training failed.');
+    mlTrainLog.textContent += '\nTraining finished. Reloading evaluation results...';
+    mlLabLoaded = false;
+    await loadMLLab();
+    mlTrainLog.textContent += '\nML Lab metrics and charts have been refreshed.';
+  }catch(e){
+    mlTrainLog.textContent += '\n' + (e.message || 'Training failed. Is the Flask backend running locally?');
+  }finally{
+    mlTrainBtn.disabled = false;
+  }
+});
+
+document.getElementById('mlLabRun').addEventListener('click', async ()=>{
+  const box = document.getElementById('mlLabResult');
+  try{
+    const res = await apiFetch(currentBackendUrl() + '/api/ml-predict', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(readInputs())});
+    const out = await res.json();
+    if(!res.ok){ box.textContent = out.error || 'Prediction failed.'; return; }
+    let h = '<div style="font-size:15px;"><b style="font-size:26px;">' + out.probability + '%</b> model estimate (' + out.model + ')' +
+      ' &nbsp;&middot;&nbsp; rule-based score: <b>' + Math.round(STATE.prob) + '%</b>';
+    if(out.expected_salary) h += '<br>Expected package if placed: <b>' + out.expected_salary + ' ' + (out.salary_unit||'') + '</b>';
+    h += '</div>';
+    if(out.factors){
+      const max = Math.max(...out.factors.map(f => Math.abs(f.effect)), 1);
+      h += '<p class="sub" style="margin:14px 0 4px;">Why this prediction? (effect vs a typical student)</p>' + out.factors.map(f => {
+        const w = Math.abs(f.effect)/max*50, pos = f.effect >= 0;
+        return '<div class="ml-factor"><span>' + fl(f.feature) + ' = ' + f.value + '</span><div class="ml-bar"><i style="' +
+          (pos ? 'left:50%;background:#1E9E6B;' : 'right:50%;background:#DC2626;') + 'width:' + w + '%"></i></div><b>' + (pos?'+':'') + f.effect + '</b></div>';
+      }).join('');
+    }
+    box.innerHTML = h;
+  }catch(e){ box.textContent = 'Could not reach the backend.'; }
+});
+</script>
+</body>
+</html>
