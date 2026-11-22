@@ -1814,8 +1814,9 @@ async function authedFetch(path, options){
 }
 
 function currentBackendUrl(){
-  return document.getElementById('backendUrl').value.trim().replace(/\/$/,'');
+  return (document.getElementById('backendUrl').value.trim() || 'https://ai-powered-student-placement-predic.vercel.app').replace(/\/$/,'');
 }
+
 
 function profileToPayload(){
   const d = readInputs();
